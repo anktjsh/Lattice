@@ -23,8 +23,7 @@ public class ImageStage extends Stage {
         getIcons().addAll(new Image(Lattice.class.getResourceAsStream("messenger.png")));
         initModality(Modality.APPLICATION_MODAL);
         setTitle(ib.getName());
-        Rectangle2D dimension = Screen.getPrimary().getVisualBounds();
-        setScene(new Scene(new ImageDisplay(ib), dimension.getWidth(), dimension.getHeight()));
+        setScene(new Scene(new ImageDisplay(ib)));
         if (Preferences.getPref().useNativeUI()) {
             getScene().getStylesheets().add(LatticeStage.NATIVE);
         }
