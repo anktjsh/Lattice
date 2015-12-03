@@ -9,7 +9,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -47,11 +46,7 @@ public class FileButton extends Button {
             try {
                 Desktop.getDesktop().open(f);
             } catch (IOException ex) {
-                Service.get().showMessage("No Application To Display This File", "Error", getScene().getWindow());
-//                Alert al = new Alert(AlertType.ERROR);
-//                al.initOwner(getScene().getWindow());
-//                al.setHeaderText("No Application To Display This File");
-//                al.showAndWait();
+                Service.get().showMessage("No Application To Display This File", "Error", getScene().getWindow(), AlertType.ERROR);
             }
         });
         setContextMenu(new ContextMenu(new MenuItem("Save File"), new MenuItem("Open File")));

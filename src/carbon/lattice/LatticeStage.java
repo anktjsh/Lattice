@@ -13,11 +13,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -26,7 +24,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -35,50 +32,10 @@ import javafx.stage.Stage;
  */
 public class LatticeStage extends Stage {
 
-    private static final String OS_ARCH = System.getProperty("ensemble.os.arch", System.getProperty("os.arch"));
-    private static final String OS_NAME = System.getProperty("ensemble.os.name", System.getProperty("os.name"));
-    static final boolean IS_IOS = "iOS".equals(OS_NAME) || "iOS Simulator".equals(OS_NAME);
-    static final boolean IS_ANDROID = "android".equals(System.getProperty("javafx.platform")) || "Dalvik".equals(System.getProperty("java.vm.name"));
-    static final boolean IS_EMBEDDED = "arm".equals(OS_ARCH) && !IS_IOS && !IS_ANDROID;
-    static final boolean IS_DESKTOP = !IS_EMBEDDED && !IS_IOS && !IS_ANDROID;
-    static final boolean IS_MAC = OS_NAME.startsWith("Mac");
-
-    public static final DimensionProperty dimension;
-    public static ArrayList<LatticeStage> stages;
-
-    static {
-        Rectangle2D vb = Screen.getPrimary().getVisualBounds();
-        double WIDTH = vb.getWidth();
-        double HEIGHT = vb.getHeight();
-        dimension = new DimensionProperty(WIDTH, HEIGHT);
-        dimension.addDimensionListener((newDim) -> {
-            System.out.println(newDim.getWidth() + " " +  newDim.getHeight());
-            System.out.println(dimension.getWidth()+" " + dimension.getHeight() );
-        });
-        stages = new ArrayList<>();
-    }
-
-    public static final ObjectProperty<String> CSS;
     public static String NATIVE;
 
     static {
-        String os = System.getProperty("os.name").toLowerCase();
-        System.out.println(os);
-        CSS = new SimpleObjectProperty<>();
-        if (os.contains("win")) {
-            if (os.contains("7")) {
-                CSS.set(Lattice.class.getResource("win7.css").toExternalForm());
-            } else {
-//              CSS.set(Lattice.class.getResource("flatterfx.css").toExternalForm());
-                CSS.set(Lattice.class.getResource("JMetroLightTheme.css").toExternalForm());
-//                CSS.set(Lattice.class.getResource("JMetroDarkTheme.css").toExternalForm());
-            }
-        } else if (os.contains("mac")) {
-            CSS.set(Lattice.class.getResource("mac_os.css").toExternalForm());
-        } else {
-            CSS.set(Lattice.class.getResource("flatterfx.css").toExternalForm());
-        }
-        NATIVE = CSS.get();
+        NATIVE = Lattice.class.getResource("flatterfx.css").toExternalForm();
     }
 
     public static int PORT = 16384;
@@ -97,21 +54,8 @@ public class LatticeStage extends Stage {
     public LatticeStage() {
         setTitle("Lattice");
         loadContacts();
-        if (IS_DESKTOP) {
-            setScene(new Scene(new LoginPane(this)));
-        } else {
-            setScene(new Scene(new LoginPane(this), dimension.getWidth(), dimension.getHeight()));
-        }
-        Preferences.getPref().nativeUI.addListener((ob, older, newer) -> {
-            if (newer) {
-                getScene().getStylesheets().add(NATIVE);
-            } else {
-                getScene().getStylesheets().remove(NATIVE);
-            }
-        });
-        if (Preferences.getPref().useNativeUI()) {
-            getScene().getStylesheets().add(NATIVE);
-        }
+        setScene(new Scene(new LoginPane(this)));
+        getScene().getStylesheets().add(NATIVE);
         setOnCloseRequest((E) -> {
             save();
             try {
@@ -121,7 +65,6 @@ public class LatticeStage extends Stage {
             Platform.exit();
             System.exit(0);
         });
-        stages.add(this);
     }
 
     public final void save() {
@@ -220,11 +163,11 @@ public class LatticeStage extends Stage {
     }
 
     public void toMessenger(Contact reci) {
-        if (reci == null && !IS_DESKTOP) {
-            getScene().setRoot(new GetContact(ms));
-        } else {
-            getScene().setRoot((new Messenger(this, ms, reci, true)));
-        }
+//        if (reci == null && !IS_DESKTOP) {
+//            getScene().setRoot(new GetContact(ms));
+//        } else {
+        getScene().setRoot((new Messenger(this, ms, reci, true)));
+//        }
     }
 
     public void toMessenger(String s, Messenger mess) {
@@ -252,12 +195,12 @@ public class LatticeStage extends Stage {
             name.setOnAction((e) -> {
                 if (!name.getText().isEmpty()) {
                     if (name.getText().equals(LatticeStage.getName())) {
-                        Service.get().showMessage("Cannot send message to yourself!", "Message Error", LatticeStage.this);
+                        Service.get().showMessage("Cannot send message to yourself!", "Message Error", LatticeStage.this, AlertType.ERROR);
                         return;
                     }
                     SocketConnection.getConnection().usernameExists(name.getText());
                     if (!SocketConnection.getConnection().getReader().exists()) {
-                        Service.get().showMessage("Username does not exist!", "Message Error", LatticeStage.this);
+                        Service.get().showMessage("Username does not exist!", "Message Error", LatticeStage.this, AlertType.ERROR);
                         return;
                     }
                     Contact recipient = new Contact("", name.getText());

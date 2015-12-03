@@ -7,7 +7,7 @@
 
     /*default font */
     -fx-font-family: 'Helvetica Neue';
-    -fx-font-size: 16.0px;
+    -fx-font-size: 14.0px;
     -fx-font-weight: 600;
     -fx-disabled-opacity: 0.6; 
 
@@ -29,24 +29,12 @@
     -fx-fill: -fx-text-base-color;
 }
 
-/**** size variants **********************************************************/
-.size-variant-touch {
-    -fx-font-size: 9.0;
-}
-
-.size-variant-desktop {
-    -fx-font-size: 16.0;
-}
-
 /*******************************************************************************
  *                                                                             *
  * Label                                                                       *
  *                                                                             *
  ******************************************************************************/
 
-.label {
-    -fx-text-fill: -fx-text-base-color;
-}
 
 .label:disabled {
     -fx-opacity: -fx-disabled-opacity;

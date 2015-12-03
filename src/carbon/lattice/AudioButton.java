@@ -5,10 +5,10 @@
  */
 package carbon.lattice;
 
-//import it.sauronsoftware.jave.AudioAttributes;
-//import it.sauronsoftware.jave.Encoder;
-//import it.sauronsoftware.jave.EncoderException;
-//import it.sauronsoftware.jave.EncodingAttributes;
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
+import it.sauronsoftware.jave.EncodingAttributes;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -165,19 +165,19 @@ public class AudioButton extends Button {
     }
 
     private void wavToMP3(File src, File ar) {
-//        AudioAttributes audio = new AudioAttributes();
-//        audio.setCodec("libmp3lame");
-//        audio.setBitRate(128000);
-//        audio.setChannels(2);
-//        audio.setSamplingRate(44100);
-//        EncodingAttributes attrs = new EncodingAttributes();
-//        attrs.setFormat("mp3");
-//        attrs.setAudioAttributes(audio);
-//        Encoder encoder = new Encoder();
-//        try {
-//            encoder.encode(src, ar, attrs);
-//        } catch (IllegalArgumentException | EncoderException ex) {
-//        }
+        AudioAttributes audio = new AudioAttributes();
+        audio.setCodec("libmp3lame");
+        audio.setBitRate(128000);
+        audio.setChannels(2);
+        audio.setSamplingRate(44100);
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("mp3");
+        attrs.setAudioAttributes(audio);
+        Encoder encoder = new Encoder();
+        try {
+            encoder.encode(src, ar, attrs);
+        } catch (IllegalArgumentException | EncoderException ex) {
+        }
     }
 
     public String getPath() {

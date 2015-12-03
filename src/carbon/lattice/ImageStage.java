@@ -24,15 +24,6 @@ public class ImageStage extends Stage {
         initModality(Modality.APPLICATION_MODAL);
         setTitle(ib.getName());
         setScene(new Scene(new ImageDisplay(ib)));
-        if (Preferences.getPref().useNativeUI()) {
-            getScene().getStylesheets().add(LatticeStage.NATIVE);
-        }
-        Preferences.getPref().nativeUI.addListener((ob, older, newer) -> {
-            if (newer) {
-                getScene().getStylesheets().add(LatticeStage.NATIVE);
-            } else {
-                getScene().getStylesheets().remove(LatticeStage.NATIVE);
-            }
-        });
+        getScene().getStylesheets().add(LatticeStage.NATIVE);
     }
 }

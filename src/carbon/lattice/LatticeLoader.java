@@ -5,7 +5,6 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.application.Preloader.ProgressNotification;
@@ -18,7 +17,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
@@ -40,25 +38,26 @@ public class LatticeLoader extends Preloader {
         p.setPadding(new Insets(5, 10, 5, 10));
         p.setAlignment(Pos.CENTER);
         p.setStyle("-fx-background-color:lightblue");
+        
         Text l, lk;
         p.getChildren().add(l = new Text("Welcome to Lattice Messenger"));
         ImageView im;
         bar.setPrefWidth(400);
         bar.setStyle("-fx-text-box-border: palegreen;\n"
                 + "  -fx-control-inner-background: darkblue;");
+        
         p.getChildren().add(im = new ImageView(stage.getIcons().get(0)));
         im.setFitHeight(150);
         im.setFitWidth(150);
         im.setPreserveRatio(true);
         p.getChildren().add(lk = new Text("Loading..."));
+        
         l.setFont(new Font(14));
         lk.setFont(new Font(14));
+        
         p.getChildren().add(bar);
-        Rectangle2D vis = Screen.getPrimary().getVisualBounds();
-        Scene s = new Scene(p, IS_DESKTOP ? 500 : vis.getWidth(), IS_DESKTOP ? 250 : vis.getHeight(), Color.LIGHTBLUE);
-        if (Preferences.getPref().useNativeUI()) {
-            s.getStylesheets().add(LatticeStage.NATIVE);
-        }
+        Scene s = new Scene(p, 500, 250);
+        s.getStylesheets().add(LatticeStage.NATIVE);
         return s;
     }
 

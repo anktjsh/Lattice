@@ -6,7 +6,6 @@
 package carbon.lattice;
 
 import java.io.File;
-import java.util.Optional;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -18,13 +17,14 @@ import javafx.stage.Stage;
 public class Lattice extends Application {
 
     @Override
-    public void start(Stage m){
+    public void start(Stage m) {
         File f = Service.get().getFile("cache" + File.separator);
         System.out.println(f.exists());
         if (f.exists()) {
             recurse(f);
         }
-        EmojiKeyboard.getKeyboard(null);
+
+        EmojiKeyboard.create();
         m = new LatticeStage();
         m.setResizable(false);
         m.getIcons().add(new Image(Lattice.class.getResourceAsStream("messenger.png")));
@@ -54,7 +54,6 @@ public class Lattice extends Application {
         ls.toMenu(null);
         ls.save();
         Service.get().restart(ls);
-        LatticeStage.stages.remove(ls);
     }
 
     /**

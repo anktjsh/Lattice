@@ -29,6 +29,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Menu;
@@ -58,7 +59,7 @@ public class MenuPane extends BorderPane {
     private int lastLoaded;
     private final BorderPane top, topTop;
     private final Button edit, write, signout, settings;
-    private final Text status, title, time, server, name;
+    private final Text status, title, time, name;
     private final VBox container;
     final ArrayList<ContactButton> conf = new ArrayList<>();
     private final LatticeStage stage;
@@ -71,19 +72,20 @@ public class MenuPane extends BorderPane {
     final ObservableList<MessageBox> undelivered;
 
     public MenuPane(LatticeStage hj) {
-        setStyle("-fx-background-color:white;");
+//        setStyle("-fx-background-color:white;");
         setPadding(new Insets(5, 10, 5, 10));
         setMinWidth(450);
         undelivered = FXCollections.observableArrayList();
         stage = hj;
         top = new BorderPane();
-        top.setStyle("-fx-background-color:white;");
+//        top.setStyle("-fx-background-color:white;");
         top.setPadding(new Insets(0, 2, 5, 2));
         topTop = new BorderPane();
         topTop.setPadding(new Insets(0, 2, 5, 2));
         top.setTop(topTop);
         BorderPane.setAlignment(topTop, Pos.CENTER);
         status = new Text(SocketConnection.getConnection().connected.get() ? "Connected" : "Offline");
+        status.setFill(Color.WHITE);
         status.setFont(new Font(16));
         settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("settings.png"), 25, 25, true, true)));
 
@@ -99,7 +101,9 @@ public class MenuPane extends BorderPane {
         topTop.setCenter(topTopCenter);
         topTopCenter.getChildren().add(0, name = new Text(LatticeStage.getName()));
         name.setFont(new Font(16));
+        name.setFill(Color.WHITE);
         time = new Text("");
+        time.setFill(Color.WHITE);
         time.setFont(new Font(16));
         topTopCenter.getChildren().add(1, time);
         topTopCenter.getChildren().add(0, signout = new Button("Sign Out"));
@@ -119,7 +123,7 @@ public class MenuPane extends BorderPane {
                     status.setText("Connected");
                     write.setDisable(false);
                 } else {
-                    Service.get().showMessage("Connection from Server Severed", "Server Error", stage);
+                    Service.get().showMessage("Connection from Server Severed", "Server Error", stage, AlertType.ERROR);
                     write.setDisable(true);
                     SocketConnection.getConnection().connected.removeListener(conn);
                     status.setText("Offline");
@@ -134,21 +138,8 @@ public class MenuPane extends BorderPane {
             SocketConnection.getConnection().connected.removeListener(conn);
             Lattice.signOut(stage);
         });
-        server = new Text();
-        server.setOnMouseClicked((E) -> {
-//            double width = server.getWidth();
-//            TextField tt;
-//            topTopCenter.getChildren().set(topTopCenter.getChildren().indexOf(server), tt = new TextField());
-//            tt.setMaxWidth(width);
-//            tt.setText(server.getText());
-//            tt.setOnAction((gE) -> {
-//                if (tt.getText().length() > 0) {
-//                    topTopCenter.getChildren().set(topTopCenter.getChildren().indexOf(tt), server);
-//                }
-//            });
-        });
-        server.setFont(new Font(16));
         title = new Text("Messages");
+        title.setFill(Color.WHITE);
         notify.addListener((ob, older, newer) -> {
             if (newer.intValue() == 0) {
                 title.setText("Messages");
@@ -201,16 +192,14 @@ public class MenuPane extends BorderPane {
                 System.out.println(f.mkdirs());
             }
         }
-//        ZCHANGE
-//        if (LatticeStage.IS_DESKTOP) {
         Stage al = new Stage();
         al.setResizable(false);
         al.getIcons().addAll(stage.getIcons());
         al.setWidth(stage.getWidth());
         al.setHeight(stage.getHeight() / 2);
         BorderPane bor;
-        al.setScene(new Scene(bor = new BorderPane(new ProgressIndicator(-1)), Color.DARKBLUE));
-        bor.setStyle("-fx-background-color:darkblue;");
+        al.setScene(new Scene(bor = new BorderPane(new ProgressIndicator(-1)), Color.BLUE));
+        bor.setStyle("-fx-background-color:blue;");
         al.initOwner(stage);
         al.initModality(Modality.APPLICATION_MODAL);
         al.setOnCloseRequest((e) -> {
@@ -221,11 +210,6 @@ public class MenuPane extends BorderPane {
             load(al);
         }).start();
         al.showAndWait();
-//        } else {
-////            new Thread(() -> {
-//            load(null);
-////            }).start();
-//        }
 
     }
 
@@ -447,7 +431,7 @@ public class MenuPane extends BorderPane {
 //                                    }
 //                                });
                                 canc.setOnAction((e) -> {
-                                    Service.get().showMessage("User will still receive message", "User Offline", stage);
+                                    Service.get().showMessage("User will still receive message", "User Offline", stage, AlertType.ERROR);
                                 });
 //                                canc.setOnAction((e) -> {
 //                                    pop.show(canc);
@@ -580,6 +564,7 @@ public class MenuPane extends BorderPane {
                 not.showInformation();
             }
         }
+
         public boolean connectionSent() {
             return connectionSent;
         }
@@ -652,33 +637,31 @@ public class MenuPane extends BorderPane {
                 if (b && (stage.getScene().getRoot() instanceof MenuPane || !stage.getScene().getRoot().equals(connt) /*|| !stage.isFocused()*/)) {
                     notify.set(notify.get() + 1);
                     if (c) {
-                        if (LatticeStage.IS_DESKTOP) {
-                            if (Preferences.getPref().showNotifications()) {
+                        if (Preferences.getPref().showNotifications()) {
                             (new Notification(getScene(), this)).show();
-                            }
-                            if (Preferences.getPref().isSoundOn()) {
-                                try {
-                                    tone(1000, 100);
-                                } catch (LineUnavailableException ex) {
-                                }
+                        }
+                        if (Preferences.getPref().isSoundOn()) {
+                            try {
+                                tone(1000, 100);
+                            } catch (LineUnavailableException ex) {
                             }
                         }
+
                     }
                     setStyle("-fx-background-color:lightblue;");
                     currentNotify.set(currentNotify.get() + 1);
                 } else if (stage.getScene().getRoot().equals(connt) && !stage.isFocused()) {
                     if (c) {
-                        if (LatticeStage.IS_DESKTOP) {
-                            if (Preferences.getPref().showNotifications()) {
+                        if (Preferences.getPref().showNotifications()) {
                             (new Notification(getScene(), this)).show();
-                            }
-                            if (Preferences.getPref().isSoundOn()) {
-                                try {
-                                    tone(1000, 100);
-                                } catch (LineUnavailableException ex) {
-                                }
+                        }
+                        if (Preferences.getPref().isSoundOn()) {
+                            try {
+                                tone(1000, 100);
+                            } catch (LineUnavailableException ex) {
                             }
                         }
+
                     }
                 }
                 container.getChildren().remove(this);

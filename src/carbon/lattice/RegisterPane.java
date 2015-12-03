@@ -5,18 +5,19 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
 import carbon.lattice.LoginPane.SocketBar;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 
 /**
@@ -26,7 +27,7 @@ import javafx.stage.Window;
 public class RegisterPane extends BorderPane implements EventHandler<ActionEvent> {
 
     private final VBox box;
-    private final Label title, user, pass;
+    private final Text title, user, pass, sec1, sec2;
     private final TextField username, question, answer;
     private final PasswordField password;
     private final Button enter, back;
@@ -41,16 +42,25 @@ public class RegisterPane extends BorderPane implements EventHandler<ActionEvent
         setPadding(new Insets(5, 10, 5, 10));
         box = new VBox(10);
         box.setPadding(new Insets(5, 10, 5, 10));
-        if (IS_DESKTOP) {
-            box.setAlignment(Pos.CENTER);
-        } else {
-            box.setAlignment(Pos.TOP_CENTER);
-        }
+        box.setAlignment(Pos.CENTER);
         setCenter(box);
-        box.getChildren().addAll(title = new Label("Register"), user = new Label("Enter a username : "), username = new TextField(), pass = new Label("Enter a password : "), password = new PasswordField(),
-                new Label("Enter a Security Question"), question = new TextField(), new Label("Enter the answer to the Security Question"), answer = new TextField(),
-                enter = new Button("Confirm"), back = new Button("Back"));
+        box.getChildren().addAll(title = new Text("Register"), 
+                user = new Text("Enter a username : "), 
+                username = new TextField(), 
+                pass = new Text("Enter a password : "), 
+                password = new PasswordField(),
+                sec1 = new Text("Enter a Security Question"), 
+                question = new TextField(), 
+                sec2 = new Text("Enter the answer to the Security Question"), 
+                answer = new TextField(),
+                enter = new Button("Confirm"), 
+                back = new Button("Back"));
         enter.setOnAction(RegisterPane.this);
+        title.setFill(Color.WHITE);
+        user.setFill(Color.WHITE);
+        pass.setFill(Color.WHITE);
+        sec1.setFill(Color.WHITE);
+        sec2.setFill(Color.WHITE);
         answer.setOnAction((E) -> {
             enter.fire();
         });
@@ -63,7 +73,6 @@ public class RegisterPane extends BorderPane implements EventHandler<ActionEvent
             Window st = getScene().getWindow();
             log.restore();
             st.sizeToScene();
-            //st.centerOnScreen();
         }
         if (e.getSource() == enter) {
             if (username.getText().isEmpty()) {
@@ -109,27 +118,15 @@ public class RegisterPane extends BorderPane implements EventHandler<ActionEvent
                 showError("Username has already been taken", "Login");
                 return;
             }
-//            Alert al = new Alert(AlertType.CONFIRMATION);
-//            al.initOwner(getScene().getWindow());
-//            al.setTitle("Registered");
-//            al.setHeaderText("Enter your Username and Password to Continue");
-//            al.showAndWait();
-            Service.get().showMessage("Enter your Username and Password to Continue", "Registered", getScene().getWindow());
+            Service.get().showMessage("Enter your Username and Password to Continue", "Registered", getScene().getWindow(), AlertType.CONFIRMATION);
             Window st = getScene().getWindow();
             log.restore();
             st.sizeToScene();
-            //st.centerOnScreen();
         }
     }
 
     public void showError(String mess, String titl) {
-//        Alert al = new Alert(AlertType.ERROR);
-//        al.initOwner(getScene().getWindow());
-//        al.setHeaderText(mess);
-//        al.setContentText(null);
-//        al.setTitle(titl);
-//        al.showAndWait();
-        Service.get().showMessage(mess, titl, getScene().getWindow());
+        Service.get().showMessage(mess, titl, getScene().getWindow(), AlertType.ERROR);
     }
 
 }

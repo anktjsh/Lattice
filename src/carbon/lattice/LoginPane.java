@@ -13,10 +13,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -24,6 +25,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -31,10 +34,8 @@ import javafx.scene.layout.VBox;
  */
 public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
 
-    public static final String OS = System.getProperty("os.name").toLowerCase();
-
     private final VBox box;
-    private final Label title, user, pass;
+    private final Text title, user, pass;
     private final TextField username;
     private final PasswordField password;
     private final Button enter;
@@ -45,9 +46,7 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
 
     public LoginPane(LatticeStage msts) {
         conn = SocketConnection.getConnection();
-        if (OS.contains("mac")) {
-            Service.get().setMenuBar();
-        }
+        Service.get().setMenuBar();
         setTop(bar = new SocketBar());
         stage = msts;
 
@@ -56,9 +55,17 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
         box.setPadding(new Insets(5, 10, 5, 10));
         box.setAlignment(Pos.CENTER);
         setCenter(box);
-        box.getChildren().addAll(title = new Label("Login"), user = new Label("Username : "), username = new TextField(), pass = new Label("Password : "), password = new PasswordField(),
-                enter = new Button("Enter"), register = new Hyperlink("Register"), recover = new Hyperlink("Forgot my Password?"));
-//        
+        box.getChildren().addAll(title = new Text("Login"),
+                user = new Text("Username : "),
+                username = new TextField(),
+                pass = new Text("Password : "),
+                password = new PasswordField(),
+                enter = new Button("Enter"),
+                register = new Hyperlink("Register"),
+                recover = new Hyperlink("Forgot my Password?"));
+        title.setFill(Color.WHITE);
+        user.setFill(Color.WHITE);
+        pass.setFill(Color.WHITE);
         enter.setOnAction(LoginPane.this);
         password.setOnAction((E) -> {
             enter.fire();
@@ -119,25 +126,26 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
     }
 
     public void showError(String mess, String titl) {
-        Service.get().showMessage(mess, titl, stage);
-//        Alert al = new Alert(AlertType.ERROR);
-//        al.initOwner(stage);
-//        al.setHeaderText(mess);
-//        al.setContentText(null);
-//        al.setTitle(titl);
-//        al.showAndWait();
+        Alert al = new Alert(AlertType.ERROR);
+        al.initOwner(stage);
+        al.setHeaderText(mess);
+        al.setContentText(null);
+        al.setTitle(titl);
+        al.showAndWait();
     }
 
     class SocketBar extends HBox {
 
-        private final Label po, ser;
+        private final Text po, ser;
         private final TextField port, server;
         private final Button settings;
 
         public SocketBar() {
             super(10);
-            po = new Label("Port : ");
-            ser = new Label("Server : ");
+            po = new Text("Port : ");
+            po.setFill(Color.WHITE);
+            ser = new Text("Server : ");
+            ser.setFill(Color.WHITE);
             List<String> al = get();
             port = new TextField(al.get(0));
             server = new TextField(al.get(1));
@@ -170,13 +178,13 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
                     if (al.size() == 2) {
                         return al;
                     } else {
-                        return FXCollections.observableArrayList("16384", "192.168.1.74");
+                        return FXCollections.observableArrayList("16384", "localhost");
                     }
                 } catch (IOException ex) {
-                    return FXCollections.observableArrayList("16384", "192.168.1.74");
+                    return FXCollections.observableArrayList("16384", "localhost");
                 }
             } else {
-                return FXCollections.observableArrayList("16384", "192.168.1.74");
+                return FXCollections.observableArrayList("16384", "localhost");
             }
         }
 

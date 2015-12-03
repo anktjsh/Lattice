@@ -5,8 +5,6 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
-import static carbon.lattice.LatticeStage.dimension;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javafx.geometry.Insets;
@@ -38,11 +36,8 @@ public class EmojiKeyboard extends BorderPane {
     private EmojiKeyboard(Messenger ms) {
         grids = new ArrayList<>();
         panes = new ArrayList<>();
-        System.out.println(dimension.getHeight() + " " + dimension.getWidth());
-        double lower = dimension.getHeight() > dimension.getWidth() ? dimension.getWidth() : dimension.getHeight();
-        System.out.println(lower);
-        setMinSize(440, IS_DESKTOP ? 185 : lower / 2 - 20);
-        setMaxSize(IS_DESKTOP ? 440 : dimension.getWidth() - 100, IS_DESKTOP ? 185 : lower / 2 - 50);
+        setMinSize(440, 185);
+        setMaxSize(440, 185);
 
         controls = new HBox(10, left = new Button("<"), page1 = new Label("Page"), page2 = new Label(""), right = new Button(">"));
         controls.setPadding(new Insets(5, 10, 5, 10));
@@ -66,24 +61,20 @@ public class EmojiKeyboard extends BorderPane {
             img.add(new EmojiButton(count + ".png"));
         }
         for (EmojiButton eb : img) {
-            eb.setMinWidth(IS_DESKTOP ? 25 : 60);
-            eb.setMaxWidth(IS_DESKTOP ? 25 : 60);
-            eb.setMinHeight(IS_DESKTOP ? 25 : 60);
-            eb.setMaxHeight(IS_DESKTOP ? 25 : 60);
+            eb.setMinWidth(40);
+            eb.setMaxWidth(40);
+            eb.setMinHeight(40);
+            eb.setMaxHeight(40);
             eb.setStyle("-fx-background-radius : 5em;");
         }
         for (int x = 0; x < grids.size(); x++) {
             if (x == 0) {
                 GridPane gp = grids.get(x);
-                int count = index[x] / (IS_DESKTOP ? 6 : 6);
+                int count = index[x] / (6);
                 int row = 0;
                 int g = 0;
                 for (int y = 0; y < index[x]; y++) {
-                    if (IS_DESKTOP){
-                        gp.add(img.get(y), row, g);
-                    } else {
-                        gp.add(img.get(y), g, row);
-                    }
+                    gp.add(img.get(y), row, g);
                     g++;
                     if (g == count) {
                         g = 0;
@@ -92,15 +83,11 @@ public class EmojiKeyboard extends BorderPane {
                 }
             } else {
                 GridPane gp = grids.get(x);
-                int count = (index[x] - index[x - 1]) / (IS_DESKTOP ? 6 : 6);
+                int count = (index[x] - index[x - 1]) / (6);
                 int row = 0;
                 int g = 0;
                 for (int y = index[x - 1]; y < index[x]; y++) {
-                    if (IS_DESKTOP){
-                        gp.add(img.get(y), row, g);
-                    } else {
-                        gp.add(img.get(y), g, row);
-                    }
+                    gp.add(img.get(y), row, g);
                     g++;
                     if (g == count) {
                         g = 0;
@@ -111,6 +98,8 @@ public class EmojiKeyboard extends BorderPane {
         }
         mess = ms;
         toIndex(0);
+
+        System.out.println("Created Emoji Keyboard");
     }
 
     private void toIndex(int n) {
@@ -129,18 +118,21 @@ public class EmojiKeyboard extends BorderPane {
 
     public static EmojiKeyboard getKeyboard(Messenger ms) {
         if (ins == null) {
-            ins = new EmojiKeyboard(ms);
-        } else {
-            ins.setWindow(ms);
+            create();
         }
+        ins.setWindow(ms);
         return ins;
+    }
+
+    public static void create() {
+        ins = new EmojiKeyboard(null);
     }
 
     private class EmojiButton extends Button {
 
         public EmojiButton(String path) {
             InputStream im = getClass().getResourceAsStream("emoji/emoji/" + path);
-            double size = IS_DESKTOP ? 20 : 50;
+            double size = 30;
             Image i = new Image(im, size, size, true, true);
             setGraphic(new ImageView(i));
             setOnAction((e) -> {

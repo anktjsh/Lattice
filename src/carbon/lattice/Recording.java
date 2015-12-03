@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
@@ -140,12 +141,7 @@ public class Recording extends BorderPane implements EventHandler<ActionEvent> {
         private void shutDown(String message) {
             if ((errStr = message) != null) {
                 Platform.runLater(() -> {
-//                    Alert al = new Alert(AlertType.ERROR);
-//                    al.setHeaderText(message);
-//                    al.setContentText(null);
-//                    al.initOwner(getScene().getWindow());
-//                    al.showAndWait();
-                    Service.get().showMessage(message, "Audio Error", getScene().getWindow());
+                    Service.get().showMessage(message, "Audio Error", getScene().getWindow(), AlertType.ERROR);
                     play.fire();
                 });
             }

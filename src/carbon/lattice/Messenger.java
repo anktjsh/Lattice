@@ -5,8 +5,6 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
-import static carbon.lattice.LatticeStage.dimension;
 import carbon.lattice.MenuPane.ContactButton;
 import carbon.lattice.Messenger.MessageBox;
 import java.awt.image.BufferedImage;
@@ -28,6 +26,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -82,10 +81,9 @@ public class Messenger extends BorderPane {
     }
 
     Messenger(LatticeStage stage, MenuPane ms, Contact reci, boolean b) {
-//        setStyle("-fx-background-color:white;");
         menu = ms;
         setPadding(new Insets(5, 10, 5, 10));
-        setMinWidth(450);
+        setMinWidth(425);
         text = new TextField();
         text.setPromptText("Message");
         image = new MenuItem();
@@ -105,9 +103,11 @@ public class Messenger extends BorderPane {
             Contact c = InfoPane.getContact(recipient.getUsername());
             if (c == null) {
                 top.setCenter(name = new Label(recipient.getUsername()));
+                name.setStyle("-fx-text-fill:white");
             } else {
                 recipient = c;
                 top.setCenter(name = new Label(c.getName().isEmpty() ? recipient.getUsername() : c.getName()));
+                name.setStyle("-fx-text-fill:white");
             }
             ContactButton mb = ms.getMButton(recipient);
             if (mb == null && b) {
@@ -155,13 +155,7 @@ public class Messenger extends BorderPane {
         }
         bottom = new BorderPane();
         text.focusedProperty().addListener((ob, older, newer) -> {
-            if (!IS_DESKTOP) {
-                if (newer) {
-                    if (!(bottom.getBottom() instanceof EmojiKeyboard)) {
-                        bottom.setBottom(EmojiKeyboard.getKeyboard(Messenger.this));
-                    }
-                }
-            }
+
         });
 
         bottom.setCenter(new BorderPane(text));
@@ -255,59 +249,15 @@ public class Messenger extends BorderPane {
             }
         });
 
-        if (LatticeStage.IS_DESKTOP) {
-            bottom.setLeft(plus);
-        } else {
-            Button[] fiv = new Button[4];
-            for (int x = 0; x < fiv.length; x++) {
-                fiv[x] = new Button("");
-                fiv[x].setStyle("");
-            }
-            fiv[0].setGraphic(camera.getGraphic());
-            fiv[1].setGraphic(image.getGraphic());
-            fiv[2].setGraphic(audio.getGraphic());
-            fiv[3].setGraphic(emoji.getGraphic());
-            fiv[0].setOnAction(camera.getOnAction());
-            fiv[1].setOnAction(image.getOnAction());
-            fiv[2].setOnAction(audio.getOnAction());
-            fiv[3].setOnAction(keyboard.getOnAction());
-            HBox hb;
-            ((BorderPane) bottom.getCenter()).setBottom((hb = new HBox(15, fiv)));
-            hb.setPadding(new Insets(5, 10, 5, 10));
-            hb.setAlignment(Pos.CENTER);
-        }
-
+        bottom.setLeft(plus);
         text.setFont(new Font(16));
         message = new VBox();
         message.setStyle("-fx-background-color:white;");
-        double lower = dimension.getWidth() > dimension.getHeight() ? dimension.getHeight() : dimension.getWidth();
-//        message.setMinWidth(IS_DESKTOP ? 415 : dimension.getWidth() - 30);
-//        message.setMaxWidth(IS_DESKTOP ? 415 : dimension.getWidth() - 30);
-//        message.setMinHeight(dimension.getHeight() / 2);
-        message.setMinWidth(IS_DESKTOP ? 415 : lower - 30);
-        message.setMaxWidth(IS_DESKTOP ? 415 : lower - 30);
-        message.setMinHeight(lower / 2);
+        message.setMinWidth(400);
+        message.setMaxWidth(400);
+        message.setMinHeight(500);
         ScrollPane scr = new ScrollPane(message);
         BorderPane cent = new BorderPane();
-//        text.focusedProperty().addListener((ob, older, newer) -> {
-//            if (!IS_DESKTOP) {
-//                stage.keyboard(newer);
-//            }
-////            if (newer){
-////                Rectangle2D vba = Screen.getPrimary().getVisualBounds();
-////                AnchorPane ap = new AnchorPane();
-////                ap.setMinHeight(vba.getHeight()/2);
-////                ap.setMaxHeight(vba.getHeight()/2);
-////                vb.getChildren().add(ap);
-////            } else {
-////                if (vb.getChildren().size()>1) {
-////                    for (int x=vb.getChildren().size()-1;x>=1;x--) {
-////                        vb.getChildren().remove(x);
-////                        System.out.println("remove");
-////                    }
-////                }
-////            }
-//        });
         scr.vvalueProperty().addListener((ob, older, newr) -> {
             if (newr.doubleValue() <= 0.05) {
                 if (menu.hash.containsKey(recipient.getUsername()) && !menu.hash.get(recipient.getUsername()).isEmpty()) {
@@ -392,6 +342,7 @@ public class Messenger extends BorderPane {
         BorderPane topTop = new BorderPane();
         Text newMess;
         topTop.setCenter(newMess = new Text("New Message"));
+        newMess.setFill(Color.WHITE);
         newMess.setFont(new Font(16));
         Button canc;
         topTop.setRight(canc = new Button("Cancel"));
@@ -404,6 +355,7 @@ public class Messenger extends BorderPane {
 
         Text h;
         top.setLeft(h = new Text("To:"));
+        h.setFill(Color.WHITE);
         BorderPane.setMargin(h, new Insets(5));
         h.setFont(new Font(16));
         HBox topCenter = new HBox(10);
@@ -425,10 +377,10 @@ public class Messenger extends BorderPane {
         emoji.setDisable(true);
         add.setOnAction((e) -> {
             if (!tf.getText().isEmpty()) {
-                Label te;
-                topCenter.getChildren().add(0, te = new Label(tf.getText()));
+                Text te;
+                topCenter.getChildren().add(0, te = new Text(tf.getText()));
+                te.setFill(Color.WHITE);
                 tf.setText("");
-                System.out.println(te.getWidth());
                 tf.setMaxWidth(tf.getWidth() - 5 * te.getText().length() - 10);
             }
         });
@@ -436,12 +388,12 @@ public class Messenger extends BorderPane {
             if (topCenter.getChildren().size() == 3 || topCenter.getChildren().size() == 1) {
                 if (!tf.getText().isEmpty()) {
                     if (tf.getText().equals(LatticeStage.getName())) {
-                        Service.get().showMessage("Cannot send message to yourself!", "Message Error", stage);
+                        Service.get().showMessage("Cannot send message to yourself!", "Message Error", stage, AlertType.ERROR);
                         return;
                     }
                     SocketConnection.getConnection().usernameExists(tf.getText());
                     if (!SocketConnection.getConnection().getReader().exists()) {
-                        Service.get().showMessage("Username does not exist!", "Message Error", stage);
+                        Service.get().showMessage("Username does not exist!", "Message Error", stage, AlertType.ERROR);
                         return;
                     }
                     recipient = new Contact("", tf.getText());
@@ -622,11 +574,7 @@ public class Messenger extends BorderPane {
                     lk.setStyle("-fx-background-color:gray;-fx-text-fill:white;");
                 }
                 lk.setStyle(lk.getStyle() + "-fx-background-radius: 10em; ");
-                if (IS_DESKTOP) {
-                    lk.setMaxWidth(270);
-                } else {
-                    lk.setMaxWidth(dimension.getWidth() - 100 - 145);
-                }
+                lk.setMaxWidth(270);
             }
         } else if (m.isEmoji()) {
             ImageLabel lk;
@@ -679,11 +627,7 @@ public class Messenger extends BorderPane {
                     lk.setStyle("-fx-background-color:gray;-fx-text-fill:white;");
                 }
                 lk.setStyle(lk.getStyle() + "-fx-background-radius: 10em; ");
-                if (IS_DESKTOP) {
-                    lk.setMaxWidth(270);
-                } else {
-                    lk.setMaxWidth(dimension.getWidth() - 100 - 145);
-                }
+                lk.setMaxWidth(270);
                 if (!b) {
                     button.setLast(m.getText(), true, c);
                 }
@@ -709,6 +653,7 @@ public class Messenger extends BorderPane {
             }
         }
         if (l != null) {
+            l.setFill(Color.WHITE);
             l.setFont(new Font(12));
         }
         if (h != null) {

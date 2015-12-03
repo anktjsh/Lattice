@@ -13,6 +13,7 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.stage.Window;
 
@@ -63,7 +64,7 @@ public class Service {
     public File getFile(String s) {
         if (provider != null) {
             return provider.getFile(s);
-        } 
+        }
         return null;
     }
 
@@ -73,9 +74,9 @@ public class Service {
         }
     }
 
-    public void showMessage(String mess, String ti, Window w) {
+    public void showMessage(String mess, String ti, Window w, AlertType aler) {
         if (provider != null) {
-            provider.showMessage(mess, ti, w);
+            provider.showMessage(mess, ti, w, aler);
         }
     }
 
@@ -107,34 +108,35 @@ public class Service {
         }
         return null;
     }
-    
-    public void saveImage(Image im, String n, Contact con){
-        if (provider!=null) {
+
+    public void saveImage(Image im, String n, Contact con) {
+        if (provider != null) {
             provider.saveImage(im, n, con);
         }
     }
-    
-    public Image loadImage(File f){
-        if (provider!=null) {
+
+    public Image loadImage(File f) {
+        if (provider != null) {
             return provider.loadImage(f);
         }
         return null;
     }
 
     public void setMenuBar() {
-        if (provider!=null){
+        if (provider != null) {
             provider.setMenuBar();
         }
     }
-    
+
     public void startRecord() {
-        
+
     }
-    
+
     public void stopRecord() {
-        
+
     }
+
     public void playback() {
-        
+
     }
 }

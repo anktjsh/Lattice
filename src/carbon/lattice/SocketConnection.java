@@ -194,7 +194,6 @@ public class SocketConnection {
                 oos.writeObject(l);
                 return (Message) ois.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
                 connected.set(false);
                 return null;
             }
@@ -295,7 +294,7 @@ public class SocketConnection {
                     }
                 }
             }
-            Boolean b = new Boolean(usernameExists.booleanValue());
+            Boolean b = usernameExists;
             usernameExists = null;
             return b;
         }

@@ -5,8 +5,6 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
-import static carbon.lattice.LatticeStage.dimension;
 import carbon.lattice.Messenger.MessageBox;
 import java.io.File;
 import java.util.ArrayList;
@@ -55,13 +53,7 @@ public class InfoPane extends BorderPane {
         setCenter(bar = new ScrollPane(box));
 
         bar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        double lower = dimension.getWidth() < dimension.getHeight() ? dimension.getWidth() : dimension.getHeight();
-        box.setMinWidth(IS_DESKTOP ? 450 : dimension.getWidth() - 100);
-//        dimension.addDimensionListener(( newDim) -> {
-//            if (!IS_DESKTOP) {
-//                box.setMinWidth(newDim.getWidth()-100);
-//            }
-//        });
+        box.setMinWidth(450);
         message = new Button("Send Message");
         top.getChildren().add(message);
         Contact c = getContact(m.getRecipient().getUsername());

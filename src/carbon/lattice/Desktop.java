@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import de.codecentric.centerdevice.platform.osx.NSMenuBarAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,6 +16,10 @@ import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -40,12 +45,12 @@ public class Desktop extends Platform {
 
     @Override
     public void play(URL url) {
-
+        
     }
 
     @Override
-    public void showMessage(String mess, String title, Window w) {
-        Alert al = new Alert(Alert.AlertType.INFORMATION);
+    public void showMessage(String mess, String title, Window w, AlertType ajl) {
+        Alert al = new Alert(ajl);
         al.initOwner(w);
         al.setHeaderText(mess);
         al.setContentText(null);
@@ -89,10 +94,8 @@ public class Desktop extends Platform {
         FileChooser fc = new FileChooser();
         fc.setTitle("Choose an image");
         ArrayList<String> al = new ArrayList<>();
-        if (LatticeStage.IS_DESKTOP) {
-            for (String s : javax.imageio.ImageIO.getReaderFileSuffixes()) {
-                al.add("*" + s);
-            }
+        for (String s : javax.imageio.ImageIO.getReaderFileSuffixes()) {
+            al.add("*" + s);
         }
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image File", al));
         File f = fc.showOpenDialog(null);
@@ -113,21 +116,22 @@ public class Desktop extends Platform {
     public Image loadImage(File F) {
         return new Image(F.toURI().toString());
     }
-
+    
     @Override
     public void setMenuBar() {
-//        if (LatticeStage.IS_MAC) {
-//            NSMenuBarAdapter adapter = new NSMenuBarAdapter();
-//            MenuBar menuBar = new MenuBar();
-//            MenuItem about = new MenuItem("Close Lattice");
-//            about.setOnAction((event) -> {
-//                Platform.exit();
-//                System.exit(0);
-//            });
-//            menuBar.getMenus().add(new Menu("Lattice"));
-//            menuBar.getMenus().get(0).getItems().add(0, about);
-//            adapter.setMenuBar(menuBar);
-//        }
+        String OS = System.getProperty("os.name").toLowerCase();
+        if (OS.contains("mac")) {
+            NSMenuBarAdapter adapter = new NSMenuBarAdapter();
+            MenuBar menuBar = new MenuBar();
+            MenuItem about = new MenuItem("Close Lattice");
+            about.setOnAction((event) -> {
+                javafx.application.Platform.exit();
+                System.exit(0);
+            });
+            menuBar.getMenus().add(new Menu("Lattice"));
+            menuBar.getMenus().get(0).getItems().add(0, about);
+            adapter.setMenuBar(menuBar);
+        }
     }
 
     @Override

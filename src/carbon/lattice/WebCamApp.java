@@ -58,13 +58,7 @@ public class WebCamApp implements Initializable {
             exception.printStackTrace();
         }
         Scene scene = new Scene(root, 900, 690);
-        Preferences.getPref().nativeUI.addListener((ob, older, newer) -> {
-            if (newer) {
-                scene.getStylesheets().add(NATIVE);
-            } else {
-                scene.getStylesheets().remove(NATIVE);
-            }
-        });
+        scene.getStylesheets().add(NATIVE);
         if (w != null) {
             stage.getIcons().addAll(((Stage) w).getIcons());
         }

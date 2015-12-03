@@ -10,5 +10,6 @@ package carbon.lattice;
  * @author Aniket
  */
 public interface DimensionListener {
+
     public void dimensionChanged(Dimension newDim);
 }

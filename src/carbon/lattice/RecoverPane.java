@@ -5,15 +5,16 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 
 /**
@@ -22,7 +23,8 @@ import javafx.stage.Window;
  */
 public class RecoverPane extends BorderPane implements EventHandler<ActionEvent> {
 
-    private final Label password, question;
+    private final Text password, question;
+    private final Text one, two, thr;
     private final VBox box;
     private final TextField user, answer;
     private final Button back;
@@ -35,16 +37,16 @@ public class RecoverPane extends BorderPane implements EventHandler<ActionEvent>
         bar = b;
         sock = sco;
 
-        setTop(new Label("Password Recovery"));
+        setTop(one = new Text("Password Recovery"));
         BorderPane.setAlignment(getTop(), Pos.CENTER);
         setCenter(box = new VBox(10));
-        if (IS_DESKTOP) {
-            box.setAlignment(Pos.CENTER);
-        } else {
-            box.setAlignment(Pos.TOP_CENTER);
-        }
-        box.getChildren().addAll(new Label("Enter Your Username : "),
-                user = new TextField(), question = new Label("Your Security Question Is : "), new Label("Enter the Answer"), answer = new TextField(""), password = new Label("Your Password is : "),
+        box.setAlignment(Pos.CENTER);
+        box.getChildren().addAll(two = new Text("Enter Your Username : "),
+                user = new TextField(), 
+                question = new Text("Your Security Question Is : "), 
+                thr = new Text("Enter the Answer"), 
+                answer = new TextField(""), 
+                password = new Text("Your Password is : "),
                 back = new Button("Back"));
         user.setOnAction(RecoverPane.this);
         answer.setOnAction(RecoverPane.this);
@@ -52,6 +54,11 @@ public class RecoverPane extends BorderPane implements EventHandler<ActionEvent>
         question.setDisable(true);
         password.setDisable(true);
         back.setOnAction(RecoverPane.this);
+        password.setFill(Color.WHITE);
+        question.setFill(Color.WHITE);
+        one.setFill(Color.WHITE);
+        two.setFill(Color.WHITE);
+        thr.setFill(Color.WHITE);
     }
     private String ques;
 
@@ -110,12 +117,6 @@ public class RecoverPane extends BorderPane implements EventHandler<ActionEvent>
     }
 
     public void showError(String mess, String titl) {
-//        Alert al = new Alert(AlertType.ERROR);
-//        al.initOwner(getScene().getWindow());
-//        al.setHeaderText(mess);
-//        al.setContentText(null);
-//        al.setTitle(titl);
-//        al.showAndWait();
-        Service.get().showMessage(mess, titl, getScene().getWindow());
+        Service.get().showMessage(mess, titl, getScene().getWindow(), AlertType.ERROR);
     }
 }

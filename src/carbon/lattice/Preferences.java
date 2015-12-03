@@ -31,13 +31,11 @@ public class Preferences {
 
     public final BooleanProperty soundOn;
     public final BooleanProperty showNotifications;
-    public final BooleanProperty nativeUI;
     public final BooleanProperty showErrorSend;
 
     private Preferences() {
-        soundOn = new SimpleBooleanProperty(this, "Sound On", true);
+        soundOn = new SimpleBooleanProperty(this, "Sound On", false);
         showNotifications = new SimpleBooleanProperty(this, "Show Notifications", true);
-        nativeUI = new SimpleBooleanProperty(this, "Use Native UI", true);
         showErrorSend = new SimpleBooleanProperty(this, "Show User Offline Message", true);
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -51,7 +49,6 @@ public class Preferences {
 
         str.add("" + soundOn.get());
         str.add("" + showNotifications.get());
-        str.add("" + nativeUI.get());
         str.add("" + showErrorSend.get());
         try {
             Files.write(fi, str);
@@ -67,8 +64,7 @@ public class Preferences {
                 if (str.size() == allProperties().size()) {
                     soundOn.set(Boolean.parseBoolean(str.get(0)));
                     showNotifications.set(Boolean.parseBoolean(str.get(1)));
-                    nativeUI.set(Boolean.parseBoolean(str.get(2)));
-                    showErrorSend.set(Boolean.parseBoolean(str.get(3)));
+                    showErrorSend.set(Boolean.parseBoolean(str.get(2)));
                 }
             } catch (IOException ex) {
             }
@@ -84,11 +80,7 @@ public class Preferences {
     }
 
     public ObservableList<BooleanProperty> allProperties() {
-        return FXCollections.observableArrayList(soundOn, showNotifications, nativeUI, showErrorSend);
-    }
-
-    public boolean useNativeUI() {
-        return nativeUI.get();
+        return FXCollections.observableArrayList(soundOn, showNotifications, showErrorSend);
     }
 
     public boolean showErrorSend() {

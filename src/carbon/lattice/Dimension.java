@@ -10,11 +10,13 @@ package carbon.lattice;
  * @author Aniket
  */
 public class Dimension {
+
     private final double width, height;
+
     public Dimension() {
         this(0, 0);
     }
-    
+
     public Dimension(double a, double b) {
         width = a;
         height = b;

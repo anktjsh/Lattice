@@ -5,7 +5,6 @@
  */
 package carbon.lattice;
 
-import static carbon.lattice.LatticeStage.IS_DESKTOP;
 import java.io.File;
 import java.io.IOException;
 import javafx.beans.property.DoubleProperty;
@@ -192,11 +191,6 @@ public class ImageDisplay extends BorderPane {
             }
         });
         buttons = FXCollections.observableArrayList(zoomI, zoomO, screenshot, crop, revert, rotate, close);
-        if (!IS_DESKTOP) {
-            for (Button b : buttons) {
-                b.setFont(new Font(10));
-            }
-        }
     }
 
     private void saveImage(Image im, File name) {
