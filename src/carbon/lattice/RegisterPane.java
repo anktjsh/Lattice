@@ -44,16 +44,16 @@ public class RegisterPane extends BorderPane implements EventHandler<ActionEvent
         box.setPadding(new Insets(5, 10, 5, 10));
         box.setAlignment(Pos.CENTER);
         setCenter(box);
-        box.getChildren().addAll(title = new Text("Register"), 
-                user = new Text("Enter a username : "), 
-                username = new TextField(), 
-                pass = new Text("Enter a password : "), 
+        box.getChildren().addAll(title = new Text("Register"),
+                user = new Text("Enter a username : "),
+                username = new TextField(),
+                pass = new Text("Enter a password : "),
                 password = new PasswordField(),
-                sec1 = new Text("Enter a Security Question"), 
-                question = new TextField(), 
-                sec2 = new Text("Enter the answer to the Security Question"), 
+                sec1 = new Text("Enter a Security Question"),
+                question = new TextField(),
+                sec2 = new Text("Enter the answer to the Security Question"),
                 answer = new TextField(),
-                enter = new Button("Confirm"), 
+                enter = new Button("Confirm"),
                 back = new Button("Back"));
         enter.setOnAction(RegisterPane.this);
         title.setFill(Color.WHITE);

@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -30,7 +31,7 @@ public class EmojiKeyboard extends BorderPane {
     private final ArrayList<GridPane> grids;
     private int current;
     private final HBox controls;
-    private final Label page1, page2;
+    private final Text page1, page2;
     private final Button left, right;
 
     private EmojiKeyboard(Messenger ms) {
@@ -39,7 +40,9 @@ public class EmojiKeyboard extends BorderPane {
         setMinSize(440, 185);
         setMaxSize(440, 185);
 
-        controls = new HBox(10, left = new Button("<"), page1 = new Label("Page"), page2 = new Label(""), right = new Button(">"));
+        controls = new HBox(10, left = new Button("<"), page1 = new Text("Page"), page2 = new Text(""), right = new Button(">"));
+        page1.setFill(Color.WHITE);
+        page2.setFill(Color.WHITE);
         controls.setPadding(new Insets(5, 10, 5, 10));
         setTop(controls);
         controls.setAlignment(Pos.CENTER);

@@ -299,34 +299,20 @@ public class Recording extends BorderPane implements EventHandler<ActionEvent> {
             microphone.start();
 //            SourceDataLine speakers = null;
             DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
-//            try {
-//                speakers = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
-//                speakers.open(format);
-//                speakers.start();
-//            } catch (LineUnavailableException ex) {
-//            }
             while (thread != null) {
                 if ((numBytesRead = microphone.read(data, 0, bufferLengthInBytes)) == -1) {
                     break;
                 }
-//                System.out.println(numBytesRead);
                 out.write(data, 0, numBytesRead);
-//                speakers.write(data, 0, numBytesRead);
             }
-            // we reached the end of the stream.
-            // stop and close the microphone.
-//            speakers.drain();
-//            speakers.close();
             microphone.stop();
             microphone.close();
             microphone = null;
-            // stop and close the output stream
             try {
                 out.flush();
                 out.close();
             } catch (IOException ex) {
             }
-            // load bytes into the audio input stream for playback
             byte audioBytes[] = out.toByteArray();
             Recording.this.bytes = audioBytes;
             ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);

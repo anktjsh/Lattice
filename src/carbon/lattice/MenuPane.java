@@ -72,13 +72,11 @@ public class MenuPane extends BorderPane {
     final ObservableList<MessageBox> undelivered;
 
     public MenuPane(LatticeStage hj) {
-//        setStyle("-fx-background-color:white;");
         setPadding(new Insets(5, 10, 5, 10));
         setMinWidth(450);
         undelivered = FXCollections.observableArrayList();
         stage = hj;
         top = new BorderPane();
-//        top.setStyle("-fx-background-color:white;");
         top.setPadding(new Insets(0, 2, 5, 2));
         topTop = new BorderPane();
         topTop.setPadding(new Insets(0, 2, 5, 2));
@@ -222,90 +220,90 @@ public class MenuPane extends BorderPane {
     }
 
     private void load(Stage al) {
-        File f = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator);
-        System.out.println(f.exists());
-        ArrayList<File> fil = new ArrayList<>();
-        if (f.exists()) {
-            File[] lis = f.listFiles();
-            for (File fa : lis) {
-                System.out.println(fa.getName());
-                if (fa.isDirectory()) {
-                    fil.add(fa);
-                }
-            }
-        }
-        System.out.println(fil.size());
-        for (File fl : fil) {
-            if (!fl.getName().equals(LatticeStage.getName())) {
-                ArrayList<Message> messages = new ArrayList<>();
-                File mes = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + fl.getName() + File.separator + "messages.txt");
-                System.out.println(mes.exists());
-                if (mes.exists()) {
-                    try (FileInputStream fout = new FileInputStream(mes); ObjectInputStream oos = new ObjectInputStream(fout)) {
-                        Object in;
-                        while ((in = oos.readObject()) != null) {
-                            System.out.println("Load Message");
-                            messages.add((Message) in);
-                        }
-                    } catch (FileNotFoundException ex) {
-                    } catch (IOException | ClassNotFoundException ex) {
-                    }
-                }
-                Message last = SocketConnection.getConnection().getLastMessage(fl.getName(), LatticeStage.getName());
-                ContactButton mb = new ContactButton(new Contact("", fl.getName()), "", null);
-                conf.add(mb);
-                System.out.println("Load : " + messages.size());
-                List<Message> retret = SocketConnection.getConnection().retrieveMessages(true, fl.getName(), messages.isEmpty() ? new Message(null, null, Message.TEXT, null, null, null, null) : messages.get(messages.size() - 1));
-                for (Message js : retret) {
-                    messages.add(js);
-                }
-                System.out.println("received " + retret.size());
-                if (!messages.isEmpty()) {
-                    int notif = 0;// = retret.size();
+        /*
+         File f = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator);
+         System.out.println(f.exists());
+         ArrayList<File> fil = new ArrayList<>();
+         if (f.exists()) {
+         File[] lis = f.listFiles();
+         for (File fa : lis) {
+         System.out.println(fa.getName());
+         if (fa.isDirectory()) {
+         fil.add(fa);
+         }
+         }
+         }
+         System.out.println(fil.size());
+         for (File fl : fil) {
+         if (!fl.getName().equals(LatticeStage.getName())) {
+         ArrayList<Message> messages = new ArrayList<>();
+         File mes = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + fl.getName() + File.separator + "messages.txt");
+         System.out.println(mes.exists());
+         if (mes.exists()) {
+         try (FileInputStream fout = new FileInputStream(mes); ObjectInputStream oos = new ObjectInputStream(fout)) {
+         Object in;
+         while ((in = oos.readObject()) != null) {
+         System.out.println("Load Message");
+         messages.add((Message) in);
+         }
+         } catch (FileNotFoundException ex) {
+         } catch (IOException | ClassNotFoundException ex) {
+         }
+         }
+         Message last = SocketConnection.getConnection().getLastMessage(fl.getName(), LatticeStage.getName());
+         ContactButton mb = new ContactButton(new Contact("", fl.getName()), "", null);
+         conf.add(mb);
+         System.out.println("Load : " + messages.size());
+         List<Message> retret = SocketConnection.getConnection().retrieveMessages(true, fl.getName(), messages.isEmpty() ? new Message(null, null, Message.TEXT, null, null, null, null) : messages.get(messages.size() - 1));
+         for (Message js : retret) {
+         messages.add(js);
+         }
+         System.out.println("received " + retret.size());
+         if (!messages.isEmpty()) {
+         int notif = 0;// = retret.size();
 
-                    int message = getMessage(messages, last);
-                    System.out.println(message);
-                    System.out.println(messages.size());
-                    if (message != -1) {
-                        notif += ((messages.size() - (message + 1)));
-                    }
-                    System.out.println(notif);
-                    if (notif != -1 && notif != 0) {
-                        for (int x = messages.size() - notif; x < messages.size(); x++) {
-                            mb.setLast(messages.get(x), true, false);
-                        }
-                    } else {
-                        mb.setLast(messages.get(messages.size() - 1), false, false);
-                    }
-                    if (messages.size() >= 50) {
-                        for (int x = 0; x < 50; x++) {
-                            mb.add(0, messages.remove(messages.size() - 1));
-                        }
-                    } else {
-                        for (int x = messages.size() - 1; x >= 0; x--) {
-                            mb.add(0, messages.remove(messages.size() - 1));
-                        }
-                    }
-                    hash.put(mb.getContact().getUsername(), messages);
+         int message = getMessage(messages, last);
+         System.out.println(message);
+         System.out.println(messages.size());
+         if (message != -1) {
+         notif += ((messages.size() - (message + 1)));
+         }
+         System.out.println(notif);
+         if (notif != -1 && notif != 0) {
+         for (int x = messages.size() - notif; x < messages.size(); x++) {
+         mb.setLast(messages.get(x), true, false);
+         }
+         } else {
+         mb.setLast(messages.get(messages.size() - 1), false, false);
+         }
+         if (messages.size() >= 50) {
+         for (int x = 0; x < 50; x++) {
+         mb.add(0, messages.remove(messages.size() - 1));
+         }
+         } else {
+         for (int x = messages.size() - 1; x >= 0; x--) {
+         mb.add(0, messages.remove(messages.size() - 1));
+         }
+         }
+         hash.put(mb.getContact().getUsername(), messages);
 
-                } else {
-                    conf.remove(mb);
-                }
-                List<String> em = null;
-                try {
-                    em = Files.readAllLines(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + fl.getName() + File.separator + "emoji.txt"));
-                } catch (IOException fe) {
-                }
-                if (em != null) {
-                    Menu cm = mb.getMScene().getEmoji();
-                    for (String sa : em) {
-                        cm.getItems().add(new EmojiMenuItem(mb.getMScene(), sa));
-                    }
-                }
-                //removeDuplicates(mb.getMScene().getMessage().getChildren());
-            }
-        }
-
+         } else {
+         conf.remove(mb);
+         }
+         List<String> em = null;
+         try {
+         em = Files.readAllLines(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + fl.getName() + File.separator + "emoji.txt"));
+         } catch (IOException fe) {
+         }
+         if (em != null) {
+         Menu cm = mb.getMScene().getEmoji();
+         for (String sa : em) {
+         cm.getItems().add(new EmojiMenuItem(mb.getMScene(), sa));
+         }
+         }
+         }
+         }
+         */
         Platform.runLater(() -> {
             container.getChildren().clear();
             Collections.sort(conf);
@@ -487,8 +485,7 @@ public class MenuPane extends BorderPane {
         private String last;
         private final Messenger connt;
         private final Button go, audio;
-        private final Text tes;
-        private final Text tem;
+        private final Text tes, tem;
         private final IntegerProperty currentNotify;
         private final HBox right, left;
         private boolean connectionSent;
@@ -513,11 +510,28 @@ public class MenuPane extends BorderPane {
                 contact = c;
                 setTop(tem = new Text(contact.getName().isEmpty() ? contact.getUsername() : contact.getName()));
             }
+            tem.setFill(Color.WHITE);
             BorderPane.setAlignment(tem, Pos.CENTER);
             tem.setFont(new Font(16));
             setRight(right = new HBox(go = new Button(">")));
-            left = new HBox(audio = new Button(""));
+            left = new HBox();
+            setLeft(left);
+            Text not = new Text("");
+            not.setFill(Color.WHITE);
+            left.getChildren().add(not);
+            audio = new Button("");
             currentNotify = new SimpleIntegerProperty(0);
+            currentNotify.addListener((ob, older, newer) -> {
+                if (newer.intValue()!=0) {
+                    if (newer.intValue()==1) {
+                        not.setText("1 New Message");
+                    } else {
+                        not.setText(newer.intValue() + " New Messages");
+                    }
+                } else {
+                    not.setText("");
+                }
+            });
             audio.setDisable(true);
             audio.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("phone.png"), 30, 30, true, true)));
 
@@ -527,9 +541,8 @@ public class MenuPane extends BorderPane {
             go.setOnAction((e) -> {
                 if (go.getText().equals(">")) {
                     stage.toMessenger("", connt);
-                    currentNotify.set(currentNotify.get() + 1);
+                    currentNotify.set(currentNotify.get() );
                     notify.set(notify.get() - currentNotify.get());
-                    notify.set(notify.get() + 1);
                     setStyle("");
                     currentNotify.set(0);
                 } else {
@@ -541,6 +554,7 @@ public class MenuPane extends BorderPane {
             });
             setCenter(tes = new Text(last));
             tes.setFont(new Font(16));
+            tes.setFill(Color.WHITE);
         }
 
         private class Notification {
@@ -648,7 +662,7 @@ public class MenuPane extends BorderPane {
                         }
 
                     }
-                    setStyle("-fx-background-color:lightblue;");
+                    //setStyle("-fx-background-color:lightblue;");
                     currentNotify.set(currentNotify.get() + 1);
                 } else if (stage.getScene().getRoot().equals(connt) && !stage.isFocused()) {
                     if (c) {

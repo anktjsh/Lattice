@@ -113,7 +113,6 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
             LatticeStage.setName(username.getText());
             stage.toMenu(null);
             stage.sizeToScene();
-            stage.centerOnScreen();
         }
         if (e.getSource() == register) {
             setCenter(new RegisterPane(this, conn, bar));

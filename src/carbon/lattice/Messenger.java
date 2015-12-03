@@ -103,17 +103,15 @@ public class Messenger extends BorderPane {
             Contact c = InfoPane.getContact(recipient.getUsername());
             if (c == null) {
                 top.setCenter(name = new Label(recipient.getUsername()));
-                name.setStyle("-fx-text-fill:white");
             } else {
                 recipient = c;
                 top.setCenter(name = new Label(c.getName().isEmpty() ? recipient.getUsername() : c.getName()));
-                name.setStyle("-fx-text-fill:white");
             }
+            name.setStyle("-fx-text-fill:white");
             ContactButton mb = ms.getMButton(recipient);
             if (mb == null && b) {
                 ms.create(Messenger.this, recipient);
             }
-
             recipient.online.addListener((ob, older, newer) -> {
                 if (newer) {
                     setGraphic(name, (new ImageView(on)));
@@ -408,6 +406,7 @@ public class Messenger extends BorderPane {
                             recipient = c;
                             top.setCenter(name = new Label(c.getName().isEmpty() ? recipient.getUsername() : c.getName()));
                         }
+                        name.setStyle("-fx-text-fill:white;");
                         recipient.online.addListener((ob, older, newer) -> {
                             if (newer) {
                                 setGraphic(name, (new ImageView(on)));
@@ -596,6 +595,7 @@ public class Messenger extends BorderPane {
         }
         if (l != null) {
             l.setFont(new Font(12));
+            l.setFill(Color.BLACK);
         }
     }
 
@@ -653,7 +653,7 @@ public class Messenger extends BorderPane {
             }
         }
         if (l != null) {
-            l.setFill(Color.WHITE);
+            l.setFill(Color.BLACK);
             l.setFont(new Font(12));
         }
         if (h != null) {

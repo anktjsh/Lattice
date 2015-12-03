@@ -45,7 +45,7 @@ public class Desktop extends Platform {
 
     @Override
     public void play(URL url) {
-        
+
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Desktop extends Platform {
     public Image loadImage(File F) {
         return new Image(F.toURI().toString());
     }
-    
+
     @Override
     public void setMenuBar() {
         String OS = System.getProperty("os.name").toLowerCase();

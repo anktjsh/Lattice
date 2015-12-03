@@ -42,10 +42,10 @@ public class RecoverPane extends BorderPane implements EventHandler<ActionEvent>
         setCenter(box = new VBox(10));
         box.setAlignment(Pos.CENTER);
         box.getChildren().addAll(two = new Text("Enter Your Username : "),
-                user = new TextField(), 
-                question = new Text("Your Security Question Is : "), 
-                thr = new Text("Enter the Answer"), 
-                answer = new TextField(""), 
+                user = new TextField(),
+                question = new Text("Your Security Question Is : "),
+                thr = new Text("Enter the Answer"),
+                answer = new TextField(""),
                 password = new Text("Your Password is : "),
                 back = new Button("Back"));
         user.setOnAction(RecoverPane.this);

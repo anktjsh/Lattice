@@ -66,7 +66,6 @@ public class WebCamApp implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle("Camera");
         stage.setScene(scene);
-        stage.centerOnScreen();
     }
 
     public final Optional<Image> showAndWait() {

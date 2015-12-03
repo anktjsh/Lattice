@@ -38,23 +38,23 @@ public class LatticeLoader extends Preloader {
         p.setPadding(new Insets(5, 10, 5, 10));
         p.setAlignment(Pos.CENTER);
         p.setStyle("-fx-background-color:lightblue");
-        
+
         Text l, lk;
         p.getChildren().add(l = new Text("Welcome to Lattice Messenger"));
         ImageView im;
         bar.setPrefWidth(400);
         bar.setStyle("-fx-text-box-border: palegreen;\n"
                 + "  -fx-control-inner-background: darkblue;");
-        
+
         p.getChildren().add(im = new ImageView(stage.getIcons().get(0)));
         im.setFitHeight(150);
         im.setFitWidth(150);
         im.setPreserveRatio(true);
         p.getChildren().add(lk = new Text("Loading..."));
-        
+
         l.setFont(new Font(14));
         lk.setFont(new Font(14));
-        
+
         p.getChildren().add(bar);
         Scene s = new Scene(p, 500, 250);
         s.getStylesheets().add(LatticeStage.NATIVE);
