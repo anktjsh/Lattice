@@ -53,7 +53,8 @@ public class LatticeStage extends Stage {
         setScene(new Scene(new LoginPane(this)));
         getScene().getStylesheets().add(NATIVE);
         setOnCloseRequest((E) -> {
-            if (getScene().getRoot() instanceof LoginPane) {
+            E.consume();
+            if (getScene().getRoot() instanceof LoginPane||((getScene().getRoot() instanceof SettingsPane)&&((SettingsPane)getScene().getRoot()).getLastNode() instanceof LoginPane)) {
                 end();
             } else {
                 Alert al = new Alert(Alert.AlertType.CONFIRMATION);

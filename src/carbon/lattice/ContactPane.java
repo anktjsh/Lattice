@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -35,12 +36,16 @@ public class ContactPane extends BorderPane {
         box.setAlignment(Pos.TOP_CENTER);
         setCenter(box);
         BorderPane.setAlignment(box, Pos.TOP_CENTER);
-        Text g, p, l;
+        Text g, p;
         box.getChildren().addAll(g = new Text("Name : "), name = new TextField(c.getName()), p = new Text("Username : "), username = new TextField(c.getUsername()));
-//        username.setEditable(false);
+        username.setEditable(false);
+        g.setFill(Color.WHITE);
+        p.setFill(Color.WHITE);
+        
         g.setFont(new Font(16));
         p.setFont(new Font(16));
         title = new Text();
+        title.setFill(Color.WHITE);
         name.setFont(new Font(16));
         username.setFont(new Font(16));
         title.setFont(new Font(16));

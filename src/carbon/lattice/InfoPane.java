@@ -12,13 +12,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -29,22 +27,16 @@ import javafx.scene.text.Text;
 public class InfoPane extends BorderPane {
 
     private final Messenger current;
-    private final Button back, message, settings;
-    private final Label title;
+    private final Button back, message;
+    private final Text title, name;
     private final BorderPane top;
     private final VBox box;
-    private final Text name;
 
     public InfoPane(Messenger m, ArrayList<Message> meas) {
         current = m;
-        settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("settings.png"), 25, 25, true, true)));
-        settings.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        settings.setMaxSize(30, 30);
-        settings.setOnAction((e) -> {
-            getScene().setRoot(new SettingsPane(this));
-        });
-        top = new BorderPane(title = new Label("Details"), null, settings, null, back = new Button("<Back"));
+        top = new BorderPane(title = new Text("Details"), null, null, null, back = new Button("<Back"));
         setTop(top);
+        title.setFill(Color.WHITE);
         BorderPane.setAlignment(top, Pos.TOP_LEFT);
         box = new VBox(15);
         box.setAlignment(Pos.TOP_CENTER);

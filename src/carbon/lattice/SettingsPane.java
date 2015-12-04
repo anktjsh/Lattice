@@ -27,8 +27,10 @@ public class SettingsPane extends BorderPane {
     private final ArrayList<CheckBox> boxes;
     private final Button back;
     private final Text title;
+    private final BorderPane main;
 
     public SettingsPane(BorderPane main) {
+        this.main = main;
         setPadding(new Insets(5, 10, 5, 10));
         setTop(new BorderPane(title = new Text("Settings"), null, null, null, back = new Button("<Back")));
         back.setOnAction((e) -> {
@@ -50,5 +52,9 @@ public class SettingsPane extends BorderPane {
             });
         }
         center.getChildren().addAll(boxes);
+    }
+    
+    public BorderPane getLastNode() {
+        return main;
     }
 }

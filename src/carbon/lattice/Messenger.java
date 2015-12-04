@@ -360,7 +360,6 @@ public class Messenger extends BorderPane {
                 cov.getIcons().addAll(((Stage) getScene().getWindow()).getIcons());
                 cov.setResizable(false);
                 cov.initOwner(getScene().getWindow());
-                cov.initModality(Modality.APPLICATION_MODAL);
 
                 getScene().getWindow().hide();
                 ScrollPane center = (ScrollPane) ((BorderPane) getCenter()).getCenter();
@@ -376,6 +375,7 @@ public class Messenger extends BorderPane {
 
                 cov.setOnCloseRequest((e) -> {
                     ((Stage) getScene().getWindow()).show();
+                    ((Stage) getScene().getWindow()).centerOnScreen();
                     ((BorderPane) getCenter()).setCenter(main.getCenter());
                     ((BorderPane) bottom.getCenter()).setCenter(text);
                     getScene().getWindow().setHeight(cov.getHeight() * 2);
