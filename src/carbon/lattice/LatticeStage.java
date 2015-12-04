@@ -12,17 +12,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -57,14 +53,31 @@ public class LatticeStage extends Stage {
         setScene(new Scene(new LoginPane(this)));
         getScene().getStylesheets().add(NATIVE);
         setOnCloseRequest((E) -> {
-            save();
-            try {
-                SocketConnection.getConnection().close(false);
-            } catch (Exception ex) {
+            if (getScene().getRoot() instanceof LoginPane) {
+                end();
+            } else {
+                Alert al = new Alert(Alert.AlertType.CONFIRMATION);
+                al.setTitle("Logout");
+                al.setHeaderText("Are you sure you want to Logout?");
+                al.initOwner(this);
+                Optional<ButtonType> show = al.showAndWait();
+                if (show.isPresent()) {
+                    if (show.get() == ButtonType.OK) {
+                        end();
+                    }
+                }
             }
-            Platform.exit();
-            System.exit(0);
         });
+    }
+
+    public void end() {
+        save();
+        try {
+            SocketConnection.getConnection().close(false);
+        } catch (Exception ex) {
+        }
+        Platform.exit();
+        System.exit(0);
     }
 
     public final void save() {
@@ -163,59 +176,11 @@ public class LatticeStage extends Stage {
     }
 
     public void toMessenger(Contact reci) {
-//        if (reci == null && !IS_DESKTOP) {
-//            getScene().setRoot(new GetContact(ms));
-//        } else {
         getScene().setRoot((new Messenger(this, ms, reci, true)));
-//        }
     }
 
     public void toMessenger(String s, Messenger mess) {
         getScene().setRoot((mess));
-    }
-
-//    
-    private class GetContact extends BorderPane {
-
-        private final TextField name;
-        private final Button ent, cancel;
-        private final BorderPane top;
-
-        public GetContact(MenuPane mp) {
-            setTop(top = new BorderPane());
-            top.setLeft(new Label("To : "));
-            HBox box;
-            top.setRight(box = new HBox(5, ent = new Button("Enter"), cancel = new Button("Cancel")));
-            setPadding(new Insets(5));
-            box.setPadding(new Insets(5));
-            cancel.setOnAction((e) -> {
-                LatticeStage.this.getScene().setRoot(mp);
-            });
-            top.setCenter(name = new TextField(""));
-            name.setOnAction((e) -> {
-                if (!name.getText().isEmpty()) {
-                    if (name.getText().equals(LatticeStage.getName())) {
-                        Service.get().showMessage("Cannot send message to yourself!", "Message Error", LatticeStage.this, AlertType.ERROR);
-                        return;
-                    }
-                    SocketConnection.getConnection().usernameExists(name.getText());
-                    if (!SocketConnection.getConnection().getReader().exists()) {
-                        Service.get().showMessage("Username does not exist!", "Message Error", LatticeStage.this, AlertType.ERROR);
-                        return;
-                    }
-                    Contact recipient = new Contact("", name.getText());
-
-                    ContactButton mb = ms.getMButton(recipient);
-                    if (mb != null) {
-                        mb.transfer(getScene());
-                    } else {
-                        toMessenger(recipient);
-                    }
-
-                }
-            });
-            ent.setOnAction(name.getOnAction());
-        }
     }
 
     public void toMenu(Messenger m) {

@@ -190,24 +190,24 @@ public class MenuPane extends BorderPane {
                 System.out.println(f.mkdirs());
             }
         }
-        Stage al = new Stage();
-        al.setResizable(false);
-        al.getIcons().addAll(stage.getIcons());
-        al.setWidth(stage.getWidth());
-        al.setHeight(stage.getHeight() / 2);
-        BorderPane bor;
-        al.setScene(new Scene(bor = new BorderPane(new ProgressIndicator(-1)), Color.BLUE));
-        bor.setStyle("-fx-background-color:blue;");
-        al.initOwner(stage);
-        al.initModality(Modality.APPLICATION_MODAL);
-        al.setOnCloseRequest((e) -> {
-            e.consume();
-        });
+//        Stage al = new Stage();
+//        al.setResizable(false);
+//        al.getIcons().addAll(stage.getIcons());
+//        al.setWidth(stage.getWidth());
+//        al.setHeight(stage.getHeight() / 2);
+//        BorderPane bor;
+//        al.setScene(new Scene(bor = new BorderPane(new ProgressIndicator(-1)), Color.BLUE));
+//        bor.setStyle("-fx-background-color:blue;");
+//        al.initOwner(stage);
+//        al.initModality(Modality.APPLICATION_MODAL);
+//        al.setOnCloseRequest((e) -> {
+//            e.consume();
+//        });
 
         new Thread(() -> {
-            load(al);
+            load(null);
         }).start();
-        al.showAndWait();
+//        al.showAndWait();
 
     }
 
@@ -541,9 +541,7 @@ public class MenuPane extends BorderPane {
             go.setOnAction((e) -> {
                 if (go.getText().equals(">")) {
                     stage.toMessenger("", connt);
-                    currentNotify.set(currentNotify.get() );
                     notify.set(notify.get() - currentNotify.get());
-                    setStyle("");
                     currentNotify.set(0);
                 } else {
                     container.getChildren().remove(ContactButton.this);
@@ -564,12 +562,8 @@ public class MenuPane extends BorderPane {
             public Notification(Scene sc, ContactButton cb) {
                 not = Notifications.create().darkStyle().title("Notification").text("New Message from : " + contact.getUsername() + "!\n" + last).position(Pos.BOTTOM_CENTER).owner(stage).onAction((e) -> {
                     if (sc != null) {
-                        sc.setRoot(connt);
-                        currentNotify.set(currentNotify.get() + 1);
-                        notify.set(notify.get() - currentNotify.get());
-                        notify.set(notify.get() + 1);
-                        cb.setStyle("");
-                        currentNotify.set(0);
+                        go.setText(">");
+                        go.fire();
                     }
                 });
             }
@@ -648,7 +642,8 @@ public class MenuPane extends BorderPane {
                 } else {
                     tes.setText(last);
                 }
-                if (b && (stage.getScene().getRoot() instanceof MenuPane || !stage.getScene().getRoot().equals(connt) /*|| !stage.isFocused()*/)) {
+                if (b && (stage.getScene().getRoot() instanceof MenuPane || !stage.getScene().getRoot().equals(connt) )) {
+                    
                     notify.set(notify.get() + 1);
                     if (c) {
                         if (Preferences.getPref().showNotifications()) {
@@ -662,7 +657,6 @@ public class MenuPane extends BorderPane {
                         }
 
                     }
-                    //setStyle("-fx-background-color:lightblue;");
                     currentNotify.set(currentNotify.get() + 1);
                 } else if (stage.getScene().getRoot().equals(connt) && !stage.isFocused()) {
                     if (c) {

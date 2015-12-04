@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import static carbon.lattice.LatticeStage.NATIVE;
 import carbon.lattice.MenuPane.ContactButton;
 import carbon.lattice.Messenger.MessageBox;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -26,8 +28,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -36,6 +41,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -44,6 +50,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  *
@@ -94,9 +102,7 @@ public class Messenger extends BorderPane {
         emoji.getItems().add(keyboard);
         audio = new MenuItem();
         if (reci == null) {
-            System.out.println("No Contact");
             noContact(stage, ms);
-            System.out.println("No Contact");
         } else {
             recipient = reci;
             top = new BorderPane();
@@ -107,6 +113,11 @@ public class Messenger extends BorderPane {
                 recipient = c;
                 top.setCenter(name = new Label(c.getName().isEmpty() ? recipient.getUsername() : c.getName()));
             }
+            name.setOnMouseClicked((e) -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    covertMode();
+                }
+            });
             name.setStyle("-fx-text-fill:white");
             ContactButton mb = ms.getMButton(recipient);
             if (mb == null && b) {
@@ -253,7 +264,7 @@ public class Messenger extends BorderPane {
         message.setStyle("-fx-background-color:white;");
         message.setMinWidth(400);
         message.setMaxWidth(400);
-        message.setMinHeight(500);
+//        message.setMinHeight(500);
         ScrollPane scr = new ScrollPane(message);
         BorderPane cent = new BorderPane();
         scr.vvalueProperty().addListener((ob, older, newr) -> {
@@ -334,6 +345,48 @@ public class Messenger extends BorderPane {
         System.out.println("Complete");
     }
 
+    private void covertMode() {
+        Alert al = new Alert(Alert.AlertType.CONFIRMATION);
+        al.setTitle("Covert");
+        al.setHeaderText("Activate Covert Mode");
+        al.initOwner(getScene().getWindow());
+        Optional<ButtonType> show = al.showAndWait();
+        if (show.isPresent()) {
+            if (show.get() == ButtonType.OK) {
+                Stage cov = new Stage();
+                cov.setTitle(getRecipient().getName().isEmpty() ? getRecipient().getUsername() : getRecipient().getName());
+                cov.setWidth(getScene().getWindow().getWidth());
+                cov.setHeight(getScene().getWindow().getHeight() / 2);
+                cov.getIcons().addAll(((Stage) getScene().getWindow()).getIcons());
+                cov.setResizable(false);
+                cov.initOwner(getScene().getWindow());
+                cov.initModality(Modality.APPLICATION_MODAL);
+
+                getScene().getWindow().hide();
+                ScrollPane center = (ScrollPane) ((BorderPane) getCenter()).getCenter();
+                ((BorderPane) getCenter()).setCenter(null);
+                BorderPane main;
+
+                cov.setScene(new Scene(main = new BorderPane(center)));
+                main.setPadding(new Insets(5, 10, 5, 10));
+                cov.getScene().getStylesheets().add(NATIVE);
+
+                ((BorderPane) bottom.getCenter()).setCenter(null);
+                main.setBottom(text);
+
+                cov.setOnCloseRequest((e) -> {
+                    ((Stage) getScene().getWindow()).show();
+                    ((BorderPane) getCenter()).setCenter(main.getCenter());
+                    ((BorderPane) bottom.getCenter()).setCenter(text);
+                    getScene().getWindow().setHeight(cov.getHeight() * 2);
+                    getScene().getWindow().setWidth(cov.getWidth());
+                    cov.close();
+                });
+                cov.showAndWait();
+            }
+        }
+    }
+
     private void noContact(LatticeStage stage, MenuPane ms) {
 
         top = new BorderPane();
@@ -406,6 +459,11 @@ public class Messenger extends BorderPane {
                             recipient = c;
                             top.setCenter(name = new Label(c.getName().isEmpty() ? recipient.getUsername() : c.getName()));
                         }
+                        name.setOnMouseClicked((dfe) -> {
+                            if (dfe.getButton() == MouseButton.SECONDARY) {
+                                covertMode();
+                            }
+                        });
                         name.setStyle("-fx-text-fill:white;");
                         recipient.online.addListener((ob, older, newer) -> {
                             if (newer) {
@@ -850,8 +908,8 @@ public class Messenger extends BorderPane {
 
         private final String name;
 
-        public ImageLabel(ImageView im, String name) {
-            this.name = name;
+        public ImageLabel(ImageView im, String na) {
+            name = na;
             setGraphic(im);
         }
 

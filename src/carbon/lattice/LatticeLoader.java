@@ -66,7 +66,6 @@ public class LatticeLoader extends Preloader {
         this.stage = stage;
         stage.getIcons().add(new Image(getClass().getResourceAsStream("messenger.png")));
         stage.setScene(createPreloaderScene());
-        stage.setAlwaysOnTop(true);
         stage.setTitle("Lattice");
         stage.setOnCloseRequest((e) -> {
             e.consume();
