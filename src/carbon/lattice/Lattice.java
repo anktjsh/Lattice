@@ -5,6 +5,9 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
+import carbon.lattice.core.DiscoveryThread;
 import java.io.File;
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -27,7 +30,7 @@ public class Lattice extends Application {
         EmojiKeyboard.create();
         m = new LatticeStage();
         m.setResizable(false);
-        m.getIcons().add(new Image(Lattice.class.getResourceAsStream("messenger.png")));
+        m.getIcons().add(new Image(Lattice.class.getResourceAsStream("images/messenger.png")));
         m.show();
 
     }
@@ -46,13 +49,13 @@ public class Lattice extends Application {
         SocketConnection.getConnection().close(true);
         Stage m = new LatticeStage();
         m.setResizable(false);
-        m.getIcons().add(new Image(Lattice.class.getResourceAsStream("messenger.png")));
+        m.getIcons().add(new Image(Lattice.class.getResourceAsStream("images/messenger.png")));
         m.show();
     }
 
     public static void signOut(LatticeStage ls) {
         ls.toMenu(null);
-        ls.save();
+//        ls.save();
         Service.get().restart(ls);
     }
 
@@ -60,6 +63,7 @@ public class Lattice extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        DiscoveryThread.getRequest();
         launch(args);
     }
 }

@@ -5,6 +5,8 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
 import carbon.lattice.LoginPane.SocketBar;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

@@ -8,6 +8,9 @@ package carbon.lattice;
 import static carbon.lattice.LatticeStage.NATIVE;
 import carbon.lattice.MenuPane.ContactButton;
 import carbon.lattice.Messenger.MessageBox;
+import carbon.lattice.core.Contact;
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,6 +38,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
@@ -50,7 +54,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -73,16 +76,16 @@ public class Messenger extends BorderPane {
     private Label name;
     private final MenuPane menu;
     private final HBox deliver = new HBox(new Text("Delivered"));
-    private final HBox sent = new HBox(new Text("Sent"));
+//    private final HBox sent = new HBox(new Text("Sent"));
 
     {
         ((Text) deliver.getChildren().get(0)).setFill(Color.BLACK);
         deliver.setAlignment(Pos.CENTER_RIGHT);
-        ((Text) sent.getChildren().get(0)).setFill(Color.BLACK);
-        sent.setAlignment(Pos.CENTER_RIGHT);
+//        ((Text) sent.getChildren().get(0)).setFill(Color.BLACK);
+//        sent.setAlignment(Pos.CENTER_RIGHT);
     }
-    private final static Image on = new Image(Messenger.class.getResourceAsStream("online.png"), 30, 30, true, true);
-    private final static Image off = new Image(Messenger.class.getResourceAsStream("offline.png"), 30, 30, true, true);
+    private final static Image on = new Image(Messenger.class.getResourceAsStream("images/online.png"), 30, 30, true, true);
+    private final static Image off = new Image(Messenger.class.getResourceAsStream("images/offline.png"), 30, 30, true, true);
 
     public Button getBack() {
         return back;
@@ -98,7 +101,7 @@ public class Messenger extends BorderPane {
         camera = new MenuItem();
         file = new MenuItem();
         emoji = new Menu();
-        keyboard = new MenuItem("", new ImageView(new Image(getClass().getResourceAsStream("keyboard.png"), 35, 35, true, true)));
+        keyboard = new MenuItem("", new ImageView(new Image(getClass().getResourceAsStream("images/keyboard.png"), 35, 35, true, true)));
         emoji.getItems().add(keyboard);
         audio = new MenuItem();
         if (reci == null) {
@@ -169,9 +172,9 @@ public class Messenger extends BorderPane {
 
         bottom.setCenter(new BorderPane(text));
         setBottom(bottom);
-        image.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("image.png"), 35, 35, true, true)));
-        camera.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("camera.png"), 35, 35, true, true)));
-        file.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("file.png"), 25, 25, true, true)));
+        image.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/image.png"), 35, 35, true, true)));
+        camera.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/camera.png"), 35, 35, true, true)));
+        file.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/file.png"), 25, 25, true, true)));
         audio.setText("");
         audio.setGraphic(new Circle(15, Color.RED));
         plus = new Button("+");
@@ -543,6 +546,15 @@ public class Messenger extends BorderPane {
 
     private String getRandomImageName() {
         return randomLong() + ".png";
+    }
+    
+    private class MessageListCell extends ListCell<Message> {
+
+        @Override
+        protected void updateItem(Message item, boolean empty) {
+            
+        }
+        
     }
 
     ImageButton thumbnail(Image im, String name, double width) {

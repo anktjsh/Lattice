@@ -5,6 +5,10 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.Preferences;
+import carbon.lattice.core.SocketConnection;
+import carbon.lattice.core.Contact;
 import carbon.lattice.Messenger.MessageBox;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -29,11 +34,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -85,7 +93,7 @@ public class MenuPane extends BorderPane {
         status = new Text(SocketConnection.getConnection().connected.get() ? "Connected" : "Offline");
         status.setFill(Color.WHITE);
         status.setFont(new Font(16));
-        settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("settings.png"), 25, 25, true, true)));
+        settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("images/settings.png"), 25, 25, true, true)));
 
         settings.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         settings.setMaxSize(30, 30);
@@ -113,7 +121,7 @@ public class MenuPane extends BorderPane {
         top.setRight(write = new Button("New"));
         write.setContentDisplay(ContentDisplay.TOP);
         write.setFont(new Font(10));
-        write.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("write.png"), 30, 30, true, true)));
+        write.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/write.png"), 30, 30, true, true)));
         conn = new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -158,7 +166,7 @@ public class MenuPane extends BorderPane {
         top.setLeft(edit = new Button("Edit"));
         edit.setContentDisplay(ContentDisplay.TOP);
         edit.setFont(new Font(10));
-        edit.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("delete.png"), 30, 30, true, true)));
+        edit.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/delete.png"), 30, 30, true, true)));
         edit.setOnAction((e) -> {
             if (!conf.isEmpty()) {
                 if (conf.get(0).getAction().getText().equals(">")) {
@@ -182,14 +190,14 @@ public class MenuPane extends BorderPane {
             stage.toMessenger(null);
         });
 
-        ArrayList<String> str = SocketConnection.getConnection().getRecipients(LatticeStage.getName());
-        System.out.println(str);
-        for (String s : str) {
-            File f = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + s + File.separator);
-            if (!f.exists()) {
-                System.out.println(f.mkdirs());
-            }
-        }
+//        ArrayList<String> str = SocketConnection.getConnection().getRecipients(LatticeStage.getName());
+//        System.out.println(str);
+//        for (String s : str) {
+//            File f = Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + s + File.separator);
+//            if (!f.exists()) {
+//                System.out.println(f.mkdirs());
+//            }
+//        }
 //        Stage al = new Stage();
 //        al.setResizable(false);
 //        al.getIcons().addAll(stage.getIcons());
@@ -203,7 +211,6 @@ public class MenuPane extends BorderPane {
 //        al.setOnCloseRequest((e) -> {
 //            e.consume();
 //        });
-
         new Thread(() -> {
             load(null);
         }).start();
@@ -408,32 +415,28 @@ public class MenuPane extends BorderPane {
                         Node j = (Node) lastSentMessage.getChildren().get(lastSentMessage.getChildren().size() - 1);
                         if (!(j instanceof Button) || ((Button) j).getGraphic() != null) {
                             if (Preferences.getPref().showErrorSend()) {
-//                                PopOver pop;
                                 Button canc;
-                                lastSentMessage.getChildren().add(canc = new Button("User Offline"));
-//                                pop = new PopOver(canc);
-//                                Button but;
-//                                VBox vb;
-//                                pop.setContentNode(vb = new VBox(5, new Text("User will still receive message"), but = new Button("Remove this Message")));
-//                                vb.setPadding(new Insets(5, 10, 5, 10));
+                                lastSentMessage.getChildren().add(canc = new Button("!"));
+                                canc.setFont(new Font(15));
                                 canc.setStyle("-fx-text-fill:red;");
-                                canc.setFont(new Font(16));
                                 canc.setWrapText(true);
                                 Messenger ms = getMButton(lastSentMessage.getRecipient()).getMScene();
                                 ms.setDeliver();
-//                                but.setOnAction((e) -> {
-//                                    lastSentMessage.getChildren().remove(canc);
-//                                    lastSentMessage.getChildren().add(new Button(""));
-//                                    if (pop.isShowing()) {
-//                                        pop.hide();
-//                                    }
-//                                });
+                                Tooltip t = new Tooltip("User will still receive this message");
+                                Tooltip.install(canc, t);
                                 canc.setOnAction((e) -> {
-                                    Service.get().showMessage("User will still receive message", "User Offline", stage, AlertType.ERROR);
+                                    Alert al = new Alert(AlertType.CONFIRMATION);
+                                    al.setTitle("Message");
+                                    al.initOwner(ms.getScene().getWindow());
+                                    al.setHeaderText("The recipient will still receive this message");
+                                    al.setContentText("Would you like to get rid off this indicator?");
+                                    Optional<ButtonType> op = al.showAndWait();
+                                    if (op.isPresent()) {
+                                        if (op.get() == ButtonType.OK) {
+                                            lastSentMessage.getChildren().remove(canc);
+                                        }
+                                    }
                                 });
-//                                canc.setOnAction((e) -> {
-//                                    pop.show(canc);
-//                                });
                             } else {
                                 Button b;
                                 lastSentMessage.getChildren().add(b = new Button(""));
@@ -522,8 +525,8 @@ public class MenuPane extends BorderPane {
             audio = new Button("");
             currentNotify = new SimpleIntegerProperty(0);
             currentNotify.addListener((ob, older, newer) -> {
-                if (newer.intValue()!=0) {
-                    if (newer.intValue()==1) {
+                if (newer.intValue() != 0) {
+                    if (newer.intValue() == 1) {
                         not.setText("1 New Message");
                     } else {
                         not.setText(newer.intValue() + " New Messages");
@@ -533,7 +536,7 @@ public class MenuPane extends BorderPane {
                 }
             });
             audio.setDisable(true);
-            audio.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("phone.png"), 30, 30, true, true)));
+            audio.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/phone.png"), 30, 30, true, true)));
 
             go.setFont(new Font(16));
             audio.setOnAction((e) -> {
@@ -642,8 +645,25 @@ public class MenuPane extends BorderPane {
                 } else {
                     tes.setText(last);
                 }
-                if (b && (stage.getScene().getRoot() instanceof MenuPane || !stage.getScene().getRoot().equals(connt) )) {
-                    
+                if (stage.getScene().getRoot() instanceof InfoPane) {
+                    InfoPane ip = (InfoPane) stage.getScene().getRoot();
+                    if (ip.getContact().equals(getContact())) {
+                        if (c) {
+                            if (Preferences.getPref().showNotifications()) {
+                                (new Notification(getScene(), this)).show();
+                            }
+                            if (Preferences.getPref().isSoundOn()) {
+                                try {
+                                    tone(1000, 100);
+                                } catch (LineUnavailableException ex) {
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else if (b && (stage.getScene().getRoot() instanceof MenuPane || !stage.getScene().getRoot().equals(connt))) {
+
                     notify.set(notify.get() + 1);
                     if (c) {
                         if (Preferences.getPref().showNotifications()) {

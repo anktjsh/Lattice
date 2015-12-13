@@ -6,10 +6,12 @@
 package carbon.lattice;
 
 import carbon.lattice.MenuPane.ContactButton;
+import carbon.lattice.core.Contact;
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +19,6 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -31,7 +31,7 @@ public class LatticeStage extends Stage {
     public static String NATIVE;
 
     static {
-        NATIVE = Lattice.class.getResource("flatterfx.css").toExternalForm();
+        NATIVE = Lattice.class.getResource("css/flatterfx.css").toExternalForm();
     }
 
     public static int PORT = 16384;
@@ -72,7 +72,7 @@ public class LatticeStage extends Stage {
     }
 
     public void end() {
-        save();
+        //save();
         try {
             SocketConnection.getConnection().close(false);
         } catch (Exception ex) {
@@ -80,7 +80,7 @@ public class LatticeStage extends Stage {
         Platform.exit();
         System.exit(0);
     }
-
+/*
     public final void save() {
         System.out.println("Saving Cache");
         if (LatticeStage.getName() != null) {
@@ -138,11 +138,11 @@ public class LatticeStage extends Stage {
             saveContacts();
         }
     }
-
+*/
     private void loadContacts() {
         List<String> al = new ArrayList<>();
         try {
-            al.addAll(Files.readAllLines(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + "contacts.txt")));
+            al.addAll(Files.readAllLines(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + "contacts.txt").toPath()));
         } catch (IOException ex) {
         }
         contacts.addAll(Contact.getContacts(al));
@@ -155,7 +155,7 @@ public class LatticeStage extends Stage {
             al.add(ac.getUsername());
         }
         try {
-            Files.write(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + "contacts.txt"), al);
+            Files.write(Service.get().getFile("cache" + File.separator + LatticeStage.getName() + File.separator + "contacts.txt").toPath(), al);
         } catch (IOException ex) {
         }
     }

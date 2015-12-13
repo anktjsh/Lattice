@@ -5,6 +5,8 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;

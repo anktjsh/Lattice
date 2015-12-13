@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
 import java.io.File;
 import java.io.IOException;
 import javafx.beans.property.DoubleProperty;

@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class Recording extends BorderPane implements EventHandler<ActionEvent> {
         conf.setOnAction(Recording.this);
         conf.setContentDisplay(ContentDisplay.TOP);
         conf.setFont(new Font(10));
-        conf.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("send.png"), 50, 50, true, true)));
+        conf.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("images/send.png"), 50, 50, true, true)));
     }
 
     @Override

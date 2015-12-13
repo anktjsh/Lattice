@@ -5,10 +5,13 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.Contact;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -23,7 +26,7 @@ import javafx.stage.FileChooser;
  */
 public class FileButton extends Button {
 
-    private static final Image file = new Image(FileButton.class.getResourceAsStream("file.png"), 80, 80, true, true);
+    private static final Image file = new Image(FileButton.class.getResourceAsStream("images/file.png"), 80, 80, true, true);
     private final Contact c;
     private final String p;
     private final byte[] b;
@@ -64,7 +67,7 @@ public class FileButton extends Button {
                     }
                 }
                 try {
-                    Files.copy(f, fi);
+                    Files.copy(f.toPath(), fi.toPath());
                 } catch (IOException ex) {
                 }
             }

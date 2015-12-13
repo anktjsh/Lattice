@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Preferences;
 import java.util.ArrayList;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;

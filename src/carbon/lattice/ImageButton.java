@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
 import java.io.File;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;

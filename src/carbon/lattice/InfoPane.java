@@ -5,6 +5,8 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.Contact;
 import carbon.lattice.Messenger.MessageBox;
 import java.io.File;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class InfoPane extends BorderPane {
     private final Text title, name;
     private final BorderPane top;
     private final VBox box;
+    
+    private Contact contact;
 
     public InfoPane(Messenger m, ArrayList<Message> meas) {
         current = m;
@@ -48,8 +52,9 @@ public class InfoPane extends BorderPane {
         box.setMinWidth(450);
         message = new Button("Send Message");
         top.getChildren().add(message);
-        Contact c = getContact(m.getRecipient().getUsername());
-        if (c == null) {
+        contact = getContact(m.getRecipient().getUsername());
+        if (contact == null) {
+            contact = new Contact(m.getRecipient().getName(), m.getRecipient().getUsername());
             Button a;
             box.getChildren().addAll(name = new Text(m.getRecipient().getUsername()), a = new Button("Create a new Contact"));
             a.setOnAction((e) -> {
@@ -58,9 +63,9 @@ public class InfoPane extends BorderPane {
             a.setFont(new Font(16));
         } else {
             Button a;
-            box.getChildren().addAll(name = new Text(c.getName().isEmpty() ? m.getRecipient().getUsername() : c.getName()), a = new Button("Edit Contact"));
+            box.getChildren().addAll(name = new Text(contact.getName().isEmpty() ? m.getRecipient().getUsername() : contact.getName()), a = new Button("Edit Contact"));
             a.setOnAction((e) -> {
-                getScene().setRoot(new ContactPane(this, c));
+                getScene().setRoot(new ContactPane(this, contact));
             });
             a.setFont(new Font(16));
         }
@@ -136,6 +141,10 @@ public class InfoPane extends BorderPane {
         back.setOnAction((e) -> {
             getScene().setRoot(current);
         });
+    }
+    
+    public Contact getContact() {
+        return contact;
     }
 
     public static Button getButton(Messenger ms, Message mesa) {

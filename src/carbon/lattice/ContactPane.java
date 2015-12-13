@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Contact;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

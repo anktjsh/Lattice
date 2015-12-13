@@ -5,6 +5,7 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.LatticeStage;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.application.Preloader.ProgressNotification;
@@ -64,7 +65,7 @@ public class LatticeLoader extends Preloader {
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("messenger.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("images/messenger.png")));
         stage.setScene(createPreloaderScene());
         stage.setTitle("Lattice");
         stage.setOnCloseRequest((e) -> {

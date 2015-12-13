@@ -5,6 +5,8 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.Contact;
 import it.sauronsoftware.jave.AudioAttributes;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncoderException;
@@ -12,6 +14,7 @@ import it.sauronsoftware.jave.EncodingAttributes;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -154,7 +157,7 @@ public class AudioButton extends Button {
                     }
                 }
                 try {
-                    Files.copy(Service.get().getFile(path), fi);
+                    Files.copy(Service.get().getFile(path).toPath(), fi.toPath());
                 } catch (IOException ex) {
                 }
             }

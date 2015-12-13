@@ -5,8 +5,11 @@
  */
 package carbon.lattice;
 
+import carbon.lattice.core.Service;
+import carbon.lattice.core.SocketConnection;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -33,6 +36,16 @@ import javafx.scene.text.Text;
  * @author Aniket
  */
 public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
+
+    private static String receivedIp;
+
+    public static String getReceivedIp() {
+        return receivedIp;
+    }
+
+    public static void setReceivedIp(String s) {
+        receivedIp = s;
+    }
 
     private final VBox box;
     private final Text title, user, pass;
@@ -70,7 +83,7 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
         password.setOnAction((E) -> {
             enter.fire();
         });
-        setBottom(new ImageView(new Image(getClass().getResourceAsStream("messenger.png"))));
+        setBottom(new ImageView(new Image(getClass().getResourceAsStream("images/messenger.png"))));
         BorderPane.setAlignment(getBottom(), Pos.CENTER);
         register.setOnAction(LoginPane.this);
         recover.setOnAction(LoginPane.this);
@@ -147,8 +160,8 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
             ser.setFill(Color.WHITE);
             List<String> al = get();
             port = new TextField(al.get(0));
-            server = new TextField(al.get(1));
-            settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("settings.png"), 25, 25, true, true)));
+            server = new TextField(getReceivedIp() != null ? getReceivedIp() : al.get(1));
+            settings = new Button("", new ImageView(new Image(getClass().getResourceAsStream("images/settings.png"), 25, 25, true, true)));
             settings.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             settings.setMaxSize(30, 30);
             settings.setOnAction((e) -> {
@@ -163,7 +176,7 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
                 }
                 f = Service.get().getFile("cache" + File.separator + "server.txt");
                 try {
-                    Files.write(f, FXCollections.observableArrayList(port.getText(), server.getText()));
+                    Files.write(f.toPath(), FXCollections.observableArrayList(port.getText(), server.getText()));
                 } catch (IOException ex) {
                 }
             }));
@@ -173,7 +186,7 @@ public class LoginPane extends BorderPane implements EventHandler<ActionEvent> {
             File f = Service.get().getFile("cache" + File.separator + "server.txt");
             if (f.exists()) {
                 try {
-                    List<String> al = Files.readAllLines(f);
+                    List<String> al = Files.readAllLines(f.toPath());
                     if (al.size() == 2) {
                         return al;
                     } else {
